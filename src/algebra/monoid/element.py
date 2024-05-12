@@ -1,5 +1,4 @@
 from __future__ import annotations
-from utils.action_tracker import AT
 
 
 base = 1000
@@ -29,9 +28,9 @@ def decode(t: int | MonoidElem) -> list[int]:
 
 class MonoidElem:
     symbols: int
+    # mc: MonoidController
 
     def __init__(self, x: int) -> None:
-        AT.monoids_created += 1
         self.symbols = x
 
     def __len__(self):
@@ -41,12 +40,17 @@ class MonoidElem:
             x //= base
             l += 1
         return l
+    
+    def len(self):
+        return self.__len__()
 
     def __getitem__(self, i: int) -> int:
         return decode(self)[i]
 
     def __repr__(self):
-        return '(' + ','.join(map(str, decode(self))) + ')'
+        idxs = decode(self.symbols)
+        names = [chr(ord('a') + idx - 1) for idx in idxs]
+        return '"' + ''.join(names) + '"'
 
     def __add__(self, other: MonoidElem):
         if other.is_identity():
@@ -100,3 +104,7 @@ class MonoidElem:
     def letter(self) -> int:
         assert len(self) == 1
         return self.symbols
+
+    # def greedy_value(self) -> Universe:
+    #     base_values = [self.mc.generators[i] for i in decode(self.symbols)]
+    #     res = 

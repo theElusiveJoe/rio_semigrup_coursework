@@ -1,13 +1,18 @@
-from universes.transformations import Transformation
-from generating_sets import GeneratingSet
+from algebra.monoid import MonoidController
+from algebra.universe import Transformation
 
-build_gs = GeneratingSet.build_from_description
+from algebra.utils import prepare_generating_set_from_description as build_gs
+
+SIMPLE_SAMPLES_LIST: list[MonoidController] = [
+    obj for name, obj in __import__(__name__).__dict__.items() if str.isupper(name)
+]
+
 
 '''
 пример из статьи
 '''
 
-t6_paper_example = build_gs(
+T6_PAPER_SAMPLE = build_gs(
     Transformation,
     [2, 2, 4, 4, 5, 6],
     [5, 3, 4, 4, 6, 6],
@@ -17,14 +22,14 @@ t6_paper_example = build_gs(
 порождающие всю полугруппу трансформаций
 '''
 
-t4_entire = build_gs(
+T4_ENTIRE = build_gs(
     Transformation,
     [1, 1, 3, 4],  # merge
-    [2, 3, 4, 1],  # cycle
+    [2, 3, 4, 1],  # cyclew
     [2, 1, 3, 4],  # swap
 )
 
-t3_entire = build_gs(
+T3_ENTIRE = build_gs(
     Transformation,
     [1, 1, 3],  # merge
     [2, 3, 1],  # cycle
@@ -36,7 +41,7 @@ t3_entire = build_gs(
 порождающие всю группу перестановок
 '''
 
-t6_permutations = build_gs(
+T6_PERMUTATIONS = build_gs(
     Transformation,
     [2, 3, 4, 5, 6, 1],  # cycle
     [2, 1, 3, 4, 5, 6],  # swap
@@ -47,7 +52,7 @@ t6_permutations = build_gs(
 ничего нового не порождается
 '''
 
-t6_two_elems = build_gs(
+T6_TEO_ELEMS = build_gs(
     Transformation,
     [1, 1, 1, 1, 1, 1],
     [2, 2, 2, 2, 2, 2],
@@ -57,7 +62,7 @@ t6_two_elems = build_gs(
 главные идеалы
 '''
 
-t6_principal_ideal = build_gs(
+T6_PRINCIPAL_IDEAL = build_gs(
     Transformation,
     [2, 3, 4, 5, 6, 1],
 )

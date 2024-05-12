@@ -1,6 +1,8 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
+from tomlkit import boolean
+
 
 class Universe(ABC):
     @abstractmethod
@@ -25,4 +27,8 @@ class Universe(ABC):
 
     @abstractmethod
     def identity(self) -> Universe:
+        pass
+
+    @abstractmethod
+    def is_identity(self) -> bool:
         pass

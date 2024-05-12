@@ -1,3 +1,13 @@
+# Run
+
+```
+cd src
+export PYTHONPATH="$(pwd)"
+python3 cmd/<script_name>.py
+```
+
+
+# References
 Try to optimize semigroup calculation algorithm.
 
 
