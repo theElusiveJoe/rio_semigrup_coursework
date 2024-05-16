@@ -51,7 +51,6 @@ class _MilitaryAlgo():
                 vai = self.S.get_value_i(i)
 
                 sai = s+ai
-
                 Nsai = self.graph.str2node.get(sai)
 
                 if Nsai is None:  # sai редуцируется

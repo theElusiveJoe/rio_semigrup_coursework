@@ -23,4 +23,7 @@ class Hclass:
             self.has_idempotent = True
             self.has_e = self.idempotent.is_identity()
 
+    def __repr__(self):
+        return f'H{{{" ".join(map(str, self.elems))}}}'
+
 

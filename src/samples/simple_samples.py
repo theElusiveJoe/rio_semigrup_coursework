@@ -1,7 +1,9 @@
 from algebra.monoid import MonoidController
 from algebra.universe import Transformation
 
-from algebra.utils import prepare_generating_set_from_description as build_gs
+from algebra.utils import prepare_generating_set_from_description
+
+build_gs = lambda *x: prepare_generating_set_from_description(*x, minimize=False)
 
 SIMPLE_SAMPLES_LIST: list[MonoidController] = [
     obj for name, obj in __import__(__name__).__dict__.items() if str.isupper(name)
@@ -65,4 +67,17 @@ T6_TEO_ELEMS = build_gs(
 T6_PRINCIPAL_IDEAL = build_gs(
     Transformation,
     [2, 3, 4, 5, 6, 1],
+)
+
+'''
+что-то для отладки
+'''
+
+T3_SPIN = build_gs(
+    Transformation,
+    [2,3,1], 
+    [3,1,2],
+    [1,1,1],
+    [2,2,2],
+    [3,3,3]
 )

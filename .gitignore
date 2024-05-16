@@ -8,3 +8,4 @@ res*
 .venv/
 legacy_trash
 report.md
+*.png

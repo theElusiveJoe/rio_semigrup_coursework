@@ -16,15 +16,21 @@ class Node:
 
     is_idempotent: bool
 
+    flag1: bool
+
     def __init__(self, val: Universe, str: MonoidElem):
         self.val = val
         self.str = str
 
         self.cay_l, self.cay_r = dict(), dict()
 
+        self.is_idempotent = False
+
+        self.flag1 = False
+
     def __hash__(self):
         return hash(self.str)
-    
+
     def __repr__(self) -> str:
         return f'Node({self.str})'
 
@@ -36,3 +42,6 @@ class Node:
 
     def is_identity(self):
         return self.str.is_identity()
+    
+    def label(self):
+        return str(self.str)
