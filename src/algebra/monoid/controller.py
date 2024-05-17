@@ -36,6 +36,9 @@ class MonoidController:
     def identity(self) -> Universe:
         return self.generators[0].identity()
 
+    def symbols_to_values(self, symbols: list[int]):
+        return list(self.get_value_i(i) for i in symbols)
+
     def get_value_i(self, i: int):
         return self.generators[i]
 

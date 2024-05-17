@@ -5,7 +5,7 @@ from algebra.graph import Hclass, Graph
 from algos.control_flow import HclassesMissmatch
 
 
-def group_h_classes(hclasses: set[Hclass]):
+def group_hclasses(hclasses: set[Hclass]):
     he, hi, hni = None, dict[int, set[Hclass]](), dict[int, set[Hclass]]()
 
     for h in hclasses:
@@ -43,14 +43,14 @@ class HclassMap:
     hi_unmatched: dict[int, tuple[set[Hclass], set[Hclass]]]
     hni_unmatched: dict[int, tuple[set[Hclass], set[Hclass]]]
 
-    def __init__(self, initObjects:tuple[set[Hclass], set[Hclass]]|None = None) -> None:
+    def __init__(self, initObjects: tuple[set[Hclass], set[Hclass]] | None = None) -> None:
         if initObjects is None:
             return
-        h1,h2 = initObjects
+        h1, h2 = initObjects
 
         self.hclasses_map = dict()
-        h1e, h1i, h1ni = group_h_classes(h1)
-        h2e, h2i, h2ni = group_h_classes(h2)
+        h1e, h1i, h1ni = group_hclasses(h1)
+        h2e, h2i, h2ni = group_hclasses(h2)
 
         # map He classes
         if h1e.size != h2e.size:
@@ -82,7 +82,10 @@ class HclassMap:
         self.hclasses_map[a] = b
 
     def map_get(self, a):
-        return self.hclasses_map[a]
+        return self.hclasses_map.get(a)
+
+    def __getitem__(self, key: Hclass):
+        return self.hclasses_map[key]
 
     def make_copy(self):
         newMap = HclassMap()

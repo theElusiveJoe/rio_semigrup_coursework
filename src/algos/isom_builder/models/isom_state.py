@@ -1,7 +1,7 @@
 from algebra.monoid import MonoidController
 
 from algebra.graph import Graph, Node, Hclass
-from algos.graph_processor import search_H_classes, markup_idempotents, search_generating_nodes
+from algos.graph_processor import search_Hclasses, markup_idempotents, search_generating_nodes
 from algos.isom_builder.models import HclassMap
 from algos.isom_builder.models import MonoidMap
 
@@ -43,8 +43,8 @@ class IsomState:
         markup_idempotents(self.G1)
         markup_idempotents(self.G2)
 
-        self.H1 = set(search_H_classes(self.G1))
-        self.H2 = set(search_H_classes(self.G2))
+        self.H1 = set(search_Hclasses(self.G1))
+        self.H2 = set(search_Hclasses(self.G2))
         self.hf = HclassMap((self.H1, self.H2))
 
     def set_f(self, a: Node, b: Node):

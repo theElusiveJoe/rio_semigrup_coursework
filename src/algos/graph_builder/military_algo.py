@@ -21,7 +21,7 @@ class _MilitaryAlgo():
         return self.graph
 
     def setup(self):
-        self.graph = Graph()
+        self.graph = Graph(self.S)
         self.queue = []
         self.queue2 = []
 

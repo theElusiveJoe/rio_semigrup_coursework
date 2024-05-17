@@ -40,7 +40,7 @@ class MonoidElem:
             x //= base
             l += 1
         return l
-    
+
     def len(self):
         return self.__len__()
 
@@ -86,6 +86,9 @@ class MonoidElem:
         return MonoidElem(
             self.symbols - self.first().symbols * base**(len(self) - 1))
 
+    def to_symbols_seq(self):
+        return decode(self)
+
     @staticmethod
     def from_char(char: int) -> MonoidElem:
         return MonoidElem(encode([char]))
@@ -107,4 +110,4 @@ class MonoidElem:
 
     # def greedy_value(self) -> Universe:
     #     base_values = [self.mc.generators[i] for i in decode(self.symbols)]
-    #     res = 
+    #     res =
