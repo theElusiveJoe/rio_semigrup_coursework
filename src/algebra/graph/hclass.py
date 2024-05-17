@@ -5,14 +5,14 @@ from algebra.graph import Node
 
 
 class Hclass:
-    elems: set[Node]
+    elems: frozenset[Node]
     size: int
     has_idempotent: bool
     has_e: bool
     idempotent: None|Node
 
     def __init__(self, elems: Iterable[Node]):
-        self.elems = set(elems)
+        self.elems = frozenset(elems)
         self.size = len(self.elems)
 
         self.idempotent = first(filter(lambda x: x.is_idempotent, self.elems), None)
@@ -26,4 +26,10 @@ class Hclass:
     def __repr__(self):
         return f'H{{{" ".join(map(str, self.elems))}}}'
 
+    def __hash__(self):
+        return hash(self.elems)
+    
+    def assign_to_elems(self):
+        for x in self.elems:
+            x.assign_hclass(self)
 

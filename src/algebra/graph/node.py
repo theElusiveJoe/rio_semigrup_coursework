@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from algebra import universe
 from algebra.universe import Universe
 from algebra.monoid import MonoidElem
-
+from algebra.graph import Hclass
 
 class Node:
     val: Universe
@@ -13,6 +13,8 @@ class Node:
 
     cay_l: dict[Universe, Node]
     cay_r: dict[Universe, Node]
+
+    hclass: Hclass
 
     is_idempotent: bool
 
@@ -45,3 +47,8 @@ class Node:
     
     def label(self):
         return str(self.str)
+    
+    def assign_hclass(self, hclass: Hclass):
+        # to ensure, we don`t assign hclass twice
+        assert self.hclass is None
+        self.hclass = hclass
