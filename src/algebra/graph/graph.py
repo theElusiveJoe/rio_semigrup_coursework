@@ -1,10 +1,10 @@
 from enum import IntEnum
 import graphviz
 
-from algebra.graph.node import Node
-
 from algebra.universe import Universe
 from algebra.monoid import MonoidElem, MonoidController
+
+from algebra.graph.node import Node
 
 
 class Lr(IntEnum):

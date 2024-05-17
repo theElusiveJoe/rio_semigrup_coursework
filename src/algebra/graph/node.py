@@ -1,11 +1,13 @@
 from __future__ import annotations
+import typing
 
-from dataclasses import dataclass
-
-from algebra import universe
 from algebra.universe import Universe
 from algebra.monoid import MonoidElem
-from algebra.graph import Hclass
+
+# need to avoid cercular import
+if typing.TYPE_CHECKING:
+    from .hclass import Hclass
+
 
 class Node:
     val: Universe
@@ -44,10 +46,10 @@ class Node:
 
     def is_identity(self):
         return self.str.is_identity()
-    
+
     def label(self):
         return str(self.str)
-    
+
     def assign_hclass(self, hclass: Hclass):
         # to ensure, we don`t assign hclass twice
         assert self.hclass is None

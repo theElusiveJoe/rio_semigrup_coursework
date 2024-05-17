@@ -45,7 +45,7 @@ def guess_hclass(state: IsomState) -> tuple[(None | IsomState), bool]:
     return None, False
 
 
-def check_guess(state: IsomState, a: Node, b: Node) -> bool:
+def check_guess_by_chain(state: IsomState, a: Node, b: Node) -> bool:
     '''
     insert an and bn chains isomorphisms,
     so it changes IsomState.f
@@ -55,18 +55,20 @@ def check_guess(state: IsomState, a: Node, b: Node) -> bool:
 
     # TODO: may be remove after debug
     # use only to check map purpose for generating value
-    assert a.val in IsomState.G1.S.generators
+    assert a.val in state.G1.S.generators
 
     # TODO: may be remove after debug
     # use only for unmatched values
-    assert a in IsomState.gs1_unmatched_nodes
-
+    assert a in state.gs1_unmatched_nodes
     # TODO: remove after debug or cache gs2_unmatched_nodes
-    assert b not in IsomState.f.all_map.values()
+    assert b not in state.f.all_map.values()
 
     # firstly we should match hclasses
     assert state.hf[a.hclass] == b.hclass
 
+    # and only after all these shallow checks, we can call set_f
+    state.set_f(a, b)
+    
     degree = 1
     seen_a = [a]
     seen_b = [b]
@@ -95,9 +97,14 @@ def check_guess(state: IsomState, a: Node, b: Node) -> bool:
         if ia == -1:
             # closure not completed
             # set new chain elem into isomorphism
-            # TODO: add (an,bn) consistency check
-            state.set_f(an, bn)
-            # TODO: add some additional consistency checks
+            an_image = state.f.map_get(an)
+            if an_image is None:
+                # TODO: add (an,bn) consistency check
+                state.set_f(an, bn)
+            else:
+                if an_image != bn:
+                    return False
+                # TODO: add some additional consistency checks
             continue
         else:
             # closure completed, parrallel chain looped
@@ -118,13 +125,12 @@ def guess_elem(state: IsomState) -> tuple[(None | IsomState), bool]:
     a, ha, hb = guess_field
     for b in hb.elems:
         # TODO: make it faster!!!
-        if b in IsomState.f.all_map.values():
+        if b in state.f.all_map.values():
             continue
         next_state = state.make_copy()
         # TODO: add simple consistency check
-        next_state.f.map_set(a, b)
         # and here is deep consistency check
-        ok = check_guess(next_state, a, b)
+        ok = check_guess_by_chain(next_state, a, b)
         if ok:
             final_state, deep_ok = guess_elem(next_state)
             if deep_ok:

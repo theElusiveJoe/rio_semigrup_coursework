@@ -10,8 +10,9 @@ def main():
     graph = military_algo(S)
     markup_idempotents(graph)
     hclasses = search_Hclasses(graph)
-    print(hclasses)
     graph.draw_dot()
+    print('check hclasses on graph diagram:')
+    print(hclasses)
 
 
 main()

@@ -49,6 +49,8 @@ class HclassMap:
         h1, h2 = initObjects
 
         self.hclasses_map = dict()
+        self.hi_unmatched = dict()
+        self.hni_unmatched = dict()
         h1e, h1i, h1ni = group_hclasses(h1)
         h2e, h2i, h2ni = group_hclasses(h2)
 

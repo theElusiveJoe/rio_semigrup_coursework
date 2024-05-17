@@ -37,8 +37,8 @@ class IsomState:
         self.gs1_nodes = set(search_generating_nodes(self.G1, self.S1))
         self.gs1_unmatched_nodes = self.gs1_nodes.copy()
 
-        self.f = MonoidMap((S1, S2))
-        self.set_f(G1.val2node[S1.identity()], G2.val2node[S2.identity()])
+        self.f = MonoidMap((self.S1, self.G1))
+        self.set_f(self.G1.val2node[self.S1.identity()], self.G2.val2node[self.S2.identity()])
 
         markup_idempotents(self.G1)
         markup_idempotents(self.G2)
