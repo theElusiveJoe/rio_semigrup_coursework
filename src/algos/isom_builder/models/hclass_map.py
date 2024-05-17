@@ -24,13 +24,12 @@ def group_h_classes(hclasses: set[Hclass]):
             st.add(h)
             continue
 
-        if h.has_idempotent:
-            st = hni.get(h.size)
-            if st is None:
-                st = set()
-                hni[h.size] = st
-            st.add(h)
-            continue
+        st = hni.get(h.size)
+        if st is None:
+            st = set()
+            hni[h.size] = st
+        st.add(h)
+        continue
 
     if he is None:
         raise HclassesMissmatch('didn`t find He')
