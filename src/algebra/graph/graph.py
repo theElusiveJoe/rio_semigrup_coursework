@@ -1,5 +1,4 @@
 from enum import IntEnum
-import graphviz
 
 from algebra.universe import Universe
 from algebra.monoid import MonoidElem, MonoidController
@@ -48,10 +47,8 @@ class Graph:
                 # directly multiply
                 return self.val2node[a.val * b.val]
             case _, True:
-                # TODO: implement
+                symbols = self.S.symbols_to_values(b.str.to_symbols_seq())
                 cur = a
-                monoid_string = b.str.to_symbols_seq()
-                symbols = self.S.symbols_to_values(monoid_string)
                 for sym in symbols:
-                    cur = a.cay_r[sym]
+                    cur = cur.cay_r[sym]
                 return cur
