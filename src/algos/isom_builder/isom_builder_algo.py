@@ -1,15 +1,18 @@
 
 from algebra.universe.abstract import Universe
-from functools import reduce
 
+from functools import reduce
 from algebra.monoid import MonoidController
 from algebra.graph import Graph, Node, Hclass
+
 from algos.graph_builder import military_algo
 from algos.graph_processor import markup_idempotents
 
+from algos.control_flow.custom_exceptions import HclassesMissmatch
 from algos.isom_builder.models import IsomState, IsomExtention
 from algos.isom_builder.models import MonoidMap, HclassMap
 from algos.isom_builder.models import Chain, ChainWinder, ChainMultipleType
+
 
 
 '''
@@ -53,25 +56,28 @@ class IsomBuilderAlgo:
         self.gs1_chains = dict()
 
     def run(self) -> IsomState | None:
-        start_state = IsomState()
+        try:
+            start_state = IsomState()
 
-        '''
-        необходимо явно ставить e1->e2 в MonoidMap
-        это связано с тем, что IsomState не хранит ссылки на граф и моноид
+            '''
+            необходимо явно ставить e1->e2 в MonoidMap
+            это связано с тем, что IsomState не хранит ссылки на граф и моноид
 
-        в HclassMap ставить h1_e -> h2_e не надо
-        при инициализации она проводит сортировку H-классов, и сама находит h1_e и H2_e
-        '''
+            в HclassMap ставить h1_e -> h2_e не надо
+            при инициализации она проводит сортировку H-классов, и сама находит h1_e и H2_e
+            '''
 
-        start_state.f = MonoidMap((self.S1, self.G1))
-        start_state.f.map_set(
-            self.G1.val2node[self.S1.identity()], self.G2.val2node[self.S2.identity()])
+            start_state.f = MonoidMap((self.S1, self.G1))
+            start_state.f.map_set(
+                self.G1.val2node[self.S1.identity()], self.G2.val2node[self.S2.identity()])
 
-        markup_idempotents(self.G1)
-        markup_idempotents(self.G2)
-        start_state.hf = HclassMap((self.G1, self.G2))
+            markup_idempotents(self.G1)
+            markup_idempotents(self.G2)
+            start_state.hf = HclassMap((self.G1, self.G2))
 
-        return self.guess_elem(start_state)
+            return self.guess_elem(start_state)
+        except HclassesMissmatch:
+            return None
 
     def get_chain(self, node: Node, from_gs1: bool):
         if from_gs1:

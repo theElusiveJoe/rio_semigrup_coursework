@@ -1,12 +1,21 @@
 # Run
 
+## TLDR
+```
+export PYTHONPATH="$(pwd)/src"
+make create_venv
+make test_all
+make demo_isom_builder_graph
+```
+
+## SetUp
 !!! set env PYTHONPATH variable before and setup virtual environment run
 ```
 export PYTHONPATH="$(pwd)/src"
 make create_venv
 ```
 
-run scripts
+## run scripts
 
 the best way is to use **makefile**
 
@@ -22,6 +31,14 @@ python3 cmd/<script_name>.py
 * `demo_isom_builder_draw_graph` --- demonstration of isomorphism builder algorithm with graph building
 
 Results of `demo_isom_builder_draw_graph` and `demo_military` are sored in `outpur` folder.
+
+## Tests
+runs tests that cover all algorithms
+
+also available in makefile 
+```
+pytest --verbose .
+```
 
 
 # References

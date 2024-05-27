@@ -1,10 +1,6 @@
-from copy import deepcopy
-from pprint import pformat, pprint
 from typing import Annotated
 
-from algebra.universe import Universe
-from algebra.monoid import MonoidController
-from algebra.graph import Hclass, Graph, hclass
+from algebra.graph import Hclass, Graph
 
 from algos.control_flow import HclassesMissmatch
 from algos.graph_processor.hclasses_searcher import search_Hclasses
@@ -97,8 +93,6 @@ class HclassMap:
     def __str__(self):
         strs = []
         strs.append("HCLASSES_MAP{")
-        # strs.append(f"    hi_unmatched: {pformat(self.hi_unmatched)}")
-        # strs.append(f"    hni_unmatched: {pformat(self.hni_unmatched)}")
         strs.append("    all_map:")
         for x, y in self._hclasses_map.items():
             strs.append(f'        {x} -> {y}')

@@ -4,7 +4,7 @@ create_venv:
 	./venv/bin/activate
 	./venv/bin/python3 -m pip install -r requirements.txt
 
-run_all_tests:
+test_all:
 	cd src
 	./venv/bin/activate
 	pytest --verbose .
