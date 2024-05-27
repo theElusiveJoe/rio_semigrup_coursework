@@ -9,6 +9,10 @@ make demo_isom_builder_graph
 # check outputs directory
 ```
 
+## requirements
+* python 3.11+
+* graphviz: https://www.graphviz.org/
+
 ## SetUp
 !!! set env PYTHONPATH variable before and setup virtual environment run
 ```
