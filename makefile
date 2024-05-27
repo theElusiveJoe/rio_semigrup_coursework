@@ -4,14 +4,13 @@ create_venv:
 	./venv/bin/activate
 	./venv/bin/python3 -m pip install -r requirements.txt
 
-test_all:
-	cd src
-	./venv/bin/activate
-	pytest --verbose .
-
 _setup:
 	cd src
 	./venv/bin/activate
+
+test_all:
+	make _setup
+	pytest --verbose .
 
 demo_graph_processor:
 	make _setup
@@ -20,7 +19,7 @@ demo_graph_processor:
 	
 demo_isom_builder_graph:
 	make _setup
-	python3 src/cmd/demo_isom_builder_draw_graph.py
+	python3 src/cmd/demo_isom_builder_graph.py
 
 	
 demo_isom_builder:
