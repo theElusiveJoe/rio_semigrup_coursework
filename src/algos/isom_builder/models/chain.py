@@ -4,22 +4,6 @@ from enum import Enum
 from algebra.graph import Graph, Node
 
 
-'''
-Chains
-My baby's got me locked up in chains
-And they ain't the kind
-That you can see
-Whoa, these chains of love
-Got a hold on me, yeah
-
-Chains
-Well, I can't break away from these chains
-Can't run around
-'Cause I'm not free
-Whoa, these chains of love won't let me be, yeah
-'''
-
-
 class ChainMultipleType(Enum):
     generator = 1
     monoid_multiply = 2
