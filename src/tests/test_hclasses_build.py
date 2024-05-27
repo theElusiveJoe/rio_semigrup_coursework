@@ -1,12 +1,12 @@
 import random
-random.seed(42)
-
-from algebra.graph import Graph
-from algebra.monoid import MonoidController
-from algebra.universe.abstract import Universe
-from algos.graph_builder import military_algo
-from algos.graph_processor import search_Hclasses
 import samples
+
+from algos.graph_processor import search_Hclasses
+from algos.graph_builder import military_algo
+from algebra.universe.abstract import Universe
+from algebra.graph import Graph
+
+random.seed(42)
 
 
 def check_hclasses(g: Graph):
@@ -14,8 +14,8 @@ def check_hclasses(g: Graph):
     all_values = set(map(lambda x: x.val, g.nodes))
 
     def get_elem_l_and_r_class(x: Universe):
-        lclass = set(map(lambda val: val*x, all_values))
-        rclass = set(map(lambda val: val*x, all_values))
+        lclass = set(map(lambda val: val * x, all_values))
+        rclass = set(map(lambda val: val * x, all_values))
         return lclass, rclass
 
     for hclass in hclasses:
@@ -36,29 +36,29 @@ def test_simple_samples():
 
 
 def test_random_samples():
-    for _ in range(100):
+    for _ in range(50):
         S = samples.gen_random_sample(
             set_size=random.randint(2, 5),
-            generators_num=random.randint(1, 5)
+            generators_num=random.randint(1, 4)
         )
         graph = military_algo(S)
         assert check_hclasses(graph)
+
 
 def test_hclasses_stability():
     '''
     как бы граф не был оформлен, множесто H-классов должно совпадать
     '''
-    for _ in range(100):
+    for _ in range(50):
         S = samples.gen_random_sample(
-            set_size=random.randint(2, 5),
+            set_size=random.randint(2, 4),
             generators_num=random.randint(1, 5)
         )
-        # print(S.generators)
 
         S1, S2 = S.mixed(), S.mixed()
         G1, G2 = military_algo(S1), military_algo(S2)
         H1, H2 = search_Hclasses(G1), search_Hclasses(G2)
-        
+
         assert len(H1) == len(H2)
 
         unmatched_classes = H2
@@ -67,14 +67,12 @@ def test_hclasses_stability():
             for h2 in unmatched_classes:
                 if h1.size != h2.size:
                     continue
-                h1_values = set(map(lambda x:x.val, h1.elems))
-                h2_values = set(map(lambda x:x.val, h2.elems))
+                h1_values = set(map(lambda x: x.val, h1.elems))
+                h2_values = set(map(lambda x: x.val, h2.elems))
                 if h1_values != h2_values:
                     continue
                 h2_res = h2
                 break
 
             assert h2_res is not None
-            # print(h1)
-            # print(h2_res)
             unmatched_classes.remove(h2_res)

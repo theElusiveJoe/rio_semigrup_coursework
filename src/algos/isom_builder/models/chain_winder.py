@@ -1,5 +1,6 @@
 from algos.isom_builder.models.chain import Chain
 
+
 class ChainWinder:
     chain: Chain
     cur_degree: int

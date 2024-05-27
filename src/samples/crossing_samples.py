@@ -4,8 +4,6 @@
 # build_gs = MonoidController.build_from_description
 
 
-
-
 # '''
 # автомат с самой плохой декомпозицией
 # '''
@@ -35,7 +33,8 @@
 # def rozen2(n: int):
 #     t1 = [
 #         [i + 2 if i == j else n for i in range(n)]
-#         for j in range(n - 2)build_gsf = GeneratingSetsFamily.build_from_description
+# for j in range(n - 2)build_gsf =
+# GeneratingSetsFamily.build_from_description
 
 #     ]
 #     t1.append([n - 1 if i == n - 2 else n for i in range(n)])

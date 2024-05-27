@@ -41,7 +41,8 @@ class Chain:
     multiple_type: ChainMultipleType
     graph: Graph
 
-    def __init__(self, base: Node, multiple_type: ChainMultipleType, graph: Graph) -> None:
+    def __init__(self, base: Node, multiple_type: ChainMultipleType,
+                 graph: Graph) -> None:
         self.is_completed = False
         self.repeat_degree = -1
         self.elems = [base]
@@ -61,9 +62,6 @@ class Chain:
         return self.elems[-1]
 
     def build_next(self) -> Node:
-        # TODO: remove after debug
-        assert self.is_completed == False
-
         new_degree: Node
         match self.multiple_type:
             case ChainMultipleType.generator:
@@ -78,16 +76,16 @@ class Chain:
 
         try:
             idx = self.elems.index(new_degree)
-            self.repeat_degree = idx+1
+            self.repeat_degree = idx + 1
             self.is_completed = True
         except ValueError:
             pass
-        
+
         self.elems.append(new_degree)
         return new_degree
 
     def get_degree(self, d: int):
-        return self.elems[d-1]
+        return self.elems[d - 1]
 
     def has_degree(self, d: int):
         return self.len() >= d

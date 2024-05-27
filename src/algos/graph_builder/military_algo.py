@@ -50,7 +50,7 @@ class _MilitaryAlgo():
                 ai = self.S.get_string_i(i)
                 vai = self.S.get_value_i(i)
 
-                sai = s+ai
+                sai = s + ai
                 Nsai = self.graph.str2node.get(sai)
 
                 if Nsai is None:  # sai редуцируется
@@ -68,7 +68,7 @@ class _MilitaryAlgo():
                     if Nv is not None:
                         N.cay_r[vai] = Nv
                     else:
-                        Nv = Node(val=v, str=N.str+ai)
+                        Nv = Node(val=v, str=N.str + ai)
                         self.graph.add_node(Nv)
                         self.queue.append(Nv)
                         N.cay_r[vai] = Nv

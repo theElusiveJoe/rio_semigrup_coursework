@@ -31,7 +31,5 @@ class IsomState:
         for v in self.hf.hni_unmatched.values():
             unmatched |= v[0]
 
-        assert set(self.hf._hclasses_map.keys()).intersection(unmatched) == set()
-
-
-
+        assert set(self.hf._hclasses_map.keys()
+                   ).intersection(unmatched) == set()

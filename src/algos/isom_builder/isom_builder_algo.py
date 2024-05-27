@@ -1,16 +1,11 @@
-from pprint import pformat
-import re
-import stat
 
-from numpy import imag
 from algebra.universe.abstract import Universe
-from utils.printer import myprint
 from functools import reduce
 
 from algebra.monoid import MonoidController
 from algebra.graph import Graph, Node, Hclass
 from algos.graph_builder import military_algo
-from algos.graph_processor import search_Hclasses, markup_idempotents, search_generating_nodes
+from algos.graph_processor import markup_idempotents
 
 from algos.isom_builder.models import IsomState, IsomExtention
 from algos.isom_builder.models import MonoidMap, HclassMap
@@ -47,10 +42,8 @@ class IsomBuilderAlgo:
     G1: Graph
     G2: Graph
 
-    # H1: set[Hclass]
-    # H2: set[Hclass]
-
-    def __init__(self, S1: MonoidController, S2: MonoidController, G1: Graph, G2: Graph):
+    def __init__(self, S1: MonoidController,
+                 S2: MonoidController, G1: Graph, G2: Graph):
         if len(S1) > len(S2):
             self.S1, self.S2, self.G1, self.G2 = S2, S1, G2, G1
         else:
@@ -85,7 +78,8 @@ class IsomBuilderAlgo:
             return self.gs1_chains.get(node)
         return self.chains.get(node)
 
-    def get_candidate_to_guess(self, state: IsomState) -> tuple[Node, Hclass] | None:
+    def get_candidate_to_guess(
+            self, state: IsomState) -> tuple[Node, Hclass] | None:
         '''
         берем рандомный незаматченный узел из gebeerating_set_1,
         такой, что его hclass уже куда-то матчится
@@ -144,7 +138,8 @@ class IsomBuilderAlgo:
 
         return None
 
-    def check_guess_by_chain(self, state: IsomState, a: Node, b: Node) -> None | IsomState:
+    def check_guess_by_chain(self, state: IsomState,
+                             a: Node, b: Node) -> None | IsomState:
         '''
         вызывается, когда хотим проверить, может ли f(a)==b
 
@@ -162,8 +157,8 @@ class IsomBuilderAlgo:
         '''
 
         '''
-        и опять же, 
-        а прилетел из get_candidate_to_guess, 
+        и опять же,
+        а прилетел из get_candidate_to_guess,
         b взять из guess field
         так что, их H-классы точно совпадают
         '''
@@ -184,7 +179,8 @@ class IsomBuilderAlgo:
             b_chain = Chain(b, ChainMultipleType.graph_traverse, self.G2)
             self.chains[b] = b_chain
 
-        # если обе цепи уже построены, то для их совместности необходимо равенство их длинн
+        # если обе цепи уже построены, то для их совместности необходимо
+        # равенство их длинн
         if a_chain.is_completed and b_chain.is_completed:
             if a_chain.len() != b_chain.len():
                 return None
@@ -209,7 +205,8 @@ class IsomBuilderAlgo:
                 res = None
                 break
 
-            # обе цепи завершились одновременно, причем все их элементы совпадали
+            # обе цепи завершились одновременно, причем все их элементы
+            # совпадали
             if a_winder.at_the_end() == b_winder.at_the_end() == True:
                 res = state_extention.merge_base_state_and_addition()
                 break
@@ -244,81 +241,19 @@ class IsomBuilderAlgo:
 
         return None
 
-    # def check(self, state: IsomState) -> bool:
-    #     '''
-    #     способ1 -- работает для автоморфизмов
-    #     строим моноид из образов generating_set_1
-    #     проверяем, что рамеры графов совпадают
-    #     '''
-    #     # print('check')
-    #     # print(state.f)
-
-    #     gs2 = list(map(lambda x: x.val, state.f.gen_set_map.values()))
-    #     image_mc = MonoidController(gs2)
-    #     image_graph = military_algo(image_mc)
-    #     if len(self.G1.nodes) != len(image_graph.nodes):
-    #         # print(self.G1.nodes)
-    #         # print(image_graph.nodes)
-    #         # print('not a gen set')
-    #         return False
-
-    #     '''
-    #     gs1 - generating_set_1
-    #     gs2 - generating_set_2
-    #     gs1_images - f(gs1)
-
-    #     разложим gs1_images по gs2
-    #     \forall a,b \in gs1 проверимx, что:
-    #         f(a)*f(b) = 
-    #     '''
-
-    #     print(state.f)
-    #     for a, a_img in state.f.gen_set_map.items():
-    #         for b, b_img in state.f.gen_set_map.items():
-    #             # print(f'try {a}*{b}')
-
-    #             var1 = a_img.val * b_img.val
-    #             # print(f'f({a})*f({b}) = {var1} = {self.G2.val2node[var1]}')
-
-    #             ab_decomp_values = self.S1.symbols_to_values(
-    #                 self.G1.val2node[a.val * b.val].str.to_symbols_seq()
-    #             )
-    #             # скорее всего, получим те же [a, b], но не всегда и это важно
-    #             ab_decomp_nodes = list(self.G1.val2node[x] for x in ab_decomp_values)
-    #             if ab_decomp_nodes == [a,b]:
-    #                 continue
-
-    #             if ab_decomp_nodes == [] and var1.is_identity():
-    #                 return True
-                
-    #             # print(a,b)
-    #             # print(f'{a}*{b} = {self.G1.val2node[a.val * b.val]} = {self.G1.val2node[a.val * b.val].str.to_symbols_seq()} = {ab_decomp_nodes}')
-    #             ab_decomp_nodes_images = list(state.f.all_map[x] for x in ab_decomp_nodes)
-    #             var2 = reduce(lambda x,y: x*y.val, ab_decomp_nodes_images[1:], ab_decomp_nodes_images[0].val)
-    #             # print(f'f({a}*{b}) = f({ab_decomp_nodes}) = f.{ab_decomp_nodes_images} = {self.G2.val2node[var2]}')
-    #             # assert False
-    #             if var1 != var2:
-    #                 return False
-        
-    #     print('ok!!')
-    #     return True
-
-
     def check(self, state: IsomState) -> bool:
         total_map: dict[Universe, Universe] = dict()
-        # print('GO SHALLOW CHECK IN ALGO')
 
+        '''
+        строим моноид из образов generating_set_1
+        проверяем, что рамеры графов совпадают
+        '''
         gs2 = list(map(lambda x: x.val, state.f.gen_set_map.values()))
         image_mc = MonoidController(gs2)
         image_graph = military_algo(image_mc)
         if len(self.G1.nodes) != len(image_graph.nodes):
-            # print(self.G1.nodes)
-            # print(image_graph.nodes)
-            # print('not a gen set')
-            # print('    SHALLOW CHECK FAILED')
             return False
 
-        # print('GO DEEP CHECK IN ALGO')
         for a in self.G1.nodes:
             for b in self.G1.nodes:
                 ab_val = a.val * b.val
@@ -330,22 +265,21 @@ class IsomBuilderAlgo:
                             for x in self.S1.symbols_to_values(b.str.to_symbols_seq())]
                 # разложение ab
                 ab_decomp = a_decomp + b_decomp
-                
+
                 if ab_decomp == [] and ab_val.is_identity():
                     continue
 
                 # список образов разложения ab
                 ab_decomp_image = [state.f.all_map[x] for x in ab_decomp]
                 # перемножим
-                ab_val_image = reduce(lambda x,y: x * y.val, ab_decomp_image[1:], ab_decomp_image[0].val)
+                ab_val_image = reduce(
+                    lambda x, y: x * y.val, ab_decomp_image[1:], ab_decomp_image[0].val)
 
                 ab_val_exists_image = total_map.get(ab_val)
                 if ab_val_exists_image is None:
                     total_map[ab_val] = ab_val_image
                 else:
-                    if ab_val_exists_image != ab_val_image: 
-                        # print('    DEEP CHECK FAILED')
+                    if ab_val_exists_image != ab_val_image:
                         return False
-        
-        print('ALGO CHECK PASSED')
+
         return True

@@ -30,6 +30,6 @@ class Transformation(Universe):
 
     def identity(self):
         return Transformation([i for i in range(1, len(self) + 1)])
-    
+
     def is_identity(self) -> bool:
         return self == self.identity()

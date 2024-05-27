@@ -18,7 +18,8 @@ class IsomExtention:
         self.hf = dict()
         self.base_state = base_state
 
-    def _hclasses_are_consistent(self, a: Hclass, b: Hclass) -> tuple[bool, bool]:
+    def _hclasses_are_consistent(
+            self, a: Hclass, b: Hclass) -> tuple[bool, bool]:
         '''
         возвращает: (совместимы ли, надо ли добавлять в расшерение base_state)
         '''
@@ -51,7 +52,8 @@ class IsomExtention:
 
         return True, True
 
-    def _monoid_elems_are_consistent(self, a: Node, b: Node) -> tuple[bool, bool]:
+    def _monoid_elems_are_consistent(
+            self, a: Node, b: Node) -> tuple[bool, bool]:
         '''
         возвращает: (совместимы ли, надо ли добавлять в расшерение base_state)
         '''
@@ -79,7 +81,8 @@ class IsomExtention:
 
         return True, True
 
-    def check_and_set_monoid_elems_and_hclasses(self, a: Node, b: Node) -> bool:
+    def check_and_set_monoid_elems_and_hclasses(
+            self, a: Node, b: Node) -> bool:
         a_class, b_class = a.get_hclass(), b.get_hclass()
         # проверяем H-классы на совместимость
         are_consistent_hclasses, should_set = self._hclasses_are_consistent(
@@ -97,17 +100,15 @@ class IsomExtention:
         if should_set:
             self.f[a] = b
         return are_consistent
-    
+
     def merge_base_state_and_addition(self) -> IsomState:
         '''
         returns updated copy of base_state
         '''
         newState = self.base_state.make_copy()
         for a, b in self.hf.items():
-            newState.hf.map_set(a,b)
+            newState.hf.map_set(a, b)
             newState.hf.assert_current_size()
         for a, b in self.f.items():
-            newState.f.map_set(a,b)
+            newState.f.map_set(a, b)
         return newState
-    
-

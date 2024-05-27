@@ -7,6 +7,7 @@ from algebra.utils.monoid_power import naive_monoid_power
 def filter_identity(generators: Sequence[Universe]):
     return list(filter(lambda x: not x.is_identity(), generators))
 
+
 def minimize_generating_set(generators: list[Universe]):
     gen_set = set(generators)
     n_target = naive_monoid_power(MonoidController(generators))
@@ -31,6 +32,7 @@ def prepare_generating_set(generators: Sequence[Universe], minimize=True):
     return MonoidController(generators)
 
 
-def prepare_generating_set_from_description(universe_type: type[Universe], *description: Any, minimize=True):
+def prepare_generating_set_from_description(
+        universe_type: type[Universe], *description: Any, minimize=True):
     generators = list(map(universe_type, description))
     return prepare_generating_set(generators, minimize)

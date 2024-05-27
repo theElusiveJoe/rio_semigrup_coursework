@@ -9,7 +9,7 @@ def naive_monoid_power(S: MonoidController):
     generators = S.generators
 
     while True:
-        new_values = {pair[0]*pair[1]
+        new_values = {pair[0] * pair[1]
                       for pair in itertools.product(list(unchecked_values), list(generators))}
         new_values.difference_update(checked_values)
         new_values.difference_update(unchecked_values)

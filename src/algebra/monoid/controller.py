@@ -41,7 +41,7 @@ class MonoidController:
         return self.generators[0].identity()
 
     def symbols_to_values(self, symbols: list[int]):
-        return list(self.get_value_i(i-1) for i in symbols)
+        return list(self.get_value_i(i - 1) for i in symbols)
 
     def get_value_i(self, i: int):
         return self.generators[i]
@@ -53,8 +53,3 @@ class MonoidController:
         new = deepcopy(self)
         shuffle(new.generators)
         return new
-
-    # @staticmethod
-    # def build_from_description(universe_type: type[Universe], *descriptions: Any) -> MonoidController:
-    #     generators = list(map(universe_type, descriptions))
-    #     return MonoidController(generators)

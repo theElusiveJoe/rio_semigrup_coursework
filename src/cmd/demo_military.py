@@ -1,14 +1,14 @@
-from algebra import graph
 from samples import simple_samples
 
 from algos.graph_builder import military_algo
-from algos.graph_processor import markup_idempotents, search_Hclasses
+from utils.graph_painter import paint_graph
 
 
 def main():
-    S = simple_samples.T3_SPIN
+    S = simple_samples.T6_PAPER_SAMPLE
     graph = military_algo(S)
-    graph.draw_dot()
+    filename = paint_graph(graph, filename="demo_T6_PAPER_EXAMPLE")
+    print(f'check {filename} for graph')
 
 
 main()

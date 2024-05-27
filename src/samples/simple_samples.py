@@ -6,11 +6,6 @@ from algebra.utils import prepare_generating_set_from_description
 build_gs = lambda *x: prepare_generating_set_from_description(
     *x, minimize=False)
 
-SIMPLE_SAMPLES_LIST: list[MonoidController] = [
-    obj for name, obj in __import__(__name__).__dict__.items() if str.isupper(name)
-]
-
-
 '''
 пример из статьи
 '''
@@ -76,14 +71,19 @@ T6_PRINCIPAL_IDEAL = build_gs(
 
 T3_SPIN = build_gs(
     Transformation,
-    [2,3,1]
+    [2, 3, 1]
 )
 
 
 T3_SPIN_PLUS = build_gs(
     Transformation,
-    [2,3,1],
-    [3,1,2],
-    [1,1,1],
-    [2,2,2],
+    [2, 3, 1],
+    [3, 1, 2],
+    [1, 1, 1],
+    [2, 2, 2],
 )
+
+
+SIMPLE_SAMPLES_LIST: list[MonoidController] = [
+    eval(name) for name in dir() if name.startswith("SIMPLE")
+]

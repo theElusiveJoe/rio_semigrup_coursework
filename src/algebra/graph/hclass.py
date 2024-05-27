@@ -23,7 +23,7 @@ class Hclass:
 
     def has_idempotent(self):
         return self.idempotent is not None
-    
+
     def has_e(self):
         return self.idempotent is not None and self.idempotent.val.is_identity()
 

@@ -9,13 +9,18 @@ def _random_transform(set_size: int):
     '''
     возвращает список длинны l с рандомными числами от a до b включительно
     '''
-    return Transformation([random.randint(1, set_size) for _ in range(set_size)])
+    return Transformation([random.randint(1, set_size)
+                          for _ in range(set_size)])
 
 
 def gen_random_sample(set_size: int, generators_num: int) -> MonoidController:
+    if set_size == 1:
+        raise RuntimeError('а зачем тебе моноид из одного элемента? :)')
+    if set_size < -0:
+        raise RuntimeError('без комментариев...')
     while True:
         try:
-            generators = [ 
+            generators = [
                 _random_transform(set_size)
                 for _ in range(generators_num)
             ]
@@ -24,4 +29,3 @@ def gen_random_sample(set_size: int, generators_num: int) -> MonoidController:
             continue
         else:
             return S
-

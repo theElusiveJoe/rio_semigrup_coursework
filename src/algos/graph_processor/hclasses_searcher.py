@@ -33,7 +33,8 @@ class _CCSearch():
         self.inv_graph = dict((node, set()) for node in self.graph.nodes)
 
         for v1 in self.graph.nodes:
-            for v2 in (v1.cay_l.values() if self.mode == Lr.left else v1.cay_r.values()):
+            for v2 in (v1.cay_l.values() if self.mode ==
+                       Lr.left else v1.cay_r.values()):
                 self.inv_graph[v2].add(v1)
 
     def topo_sort(self):
@@ -64,7 +65,8 @@ class _CCSearch():
         def dfs(v1: Node):
             v1.flag1 = True
             cc = {v1}
-            for v2 in (v1.cay_l.values() if self.mode == Lr.left else v1.cay_r.values()):
+            for v2 in (v1.cay_l.values() if self.mode ==
+                       Lr.left else v1.cay_r.values()):
                 if v2.flag1:
                     continue
                 cc |= dfs(v2)

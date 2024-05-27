@@ -7,13 +7,14 @@ class MonoidMap:
     S1: MonoidController
     G1: Graph
 
-    # TODO: переписать через двусторонний словарь
+    # CMP: переписать через двусторонний словарь
 
     all_map: dict[Node, Node]
     gen_set_map: dict[Node, Node]
     s1_unmatched_generatos: set[Node]
 
-    def __init__(self, initObjects: tuple[MonoidController, Graph] | None = None) -> None:
+    def __init__(
+            self, initObjects: tuple[MonoidController, Graph] | None = None) -> None:
         if initObjects is None:
             return
 
@@ -26,9 +27,6 @@ class MonoidMap:
     def __str__(self):
         strs = []
         strs.append("MONOID_MAP{")
-        # strs.append(f"    unmatched_generators: {self.s1_unmatched_generatos}")
-        # strs.append(
-        #     f"    all_map: {{{''.join([f'{x} -> {y}' for x,y in self.all_map.items()])}}}")
         strs.append("    gen_set_map:")
         for x, y in self.gen_set_map.items():
             strs.append(f'        {x} -> {y}')
