@@ -1,5 +1,7 @@
 
 import graphviz
+import os
+import pathlib
 
 from algebra.graph import Graph, Hclass
 from algos.isom_builder.models.monoid_map import MonoidMap
@@ -62,5 +64,6 @@ def paint_graph(
     if isom is not None:
         _paint_isom(dot, isom)
 
-    return dot.render(f'../output/{filename}_graph',
-                      format='png', cleanup=True)
+    path = pathlib.Path(f'{os.environ["PYTHONPATH"]}/../output/{filename}_graph').resolve()
+    res = dot.render(path, format='png', cleanup=True)
+    return res 

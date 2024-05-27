@@ -5,7 +5,7 @@ res
 **/.idea
 /origins
 res*
-.venv/
+*venv*
 legacy_trash
 report.md
 *.png

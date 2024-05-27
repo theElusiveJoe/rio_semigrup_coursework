@@ -1,8 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
-from tomlkit import boolean
-
 
 class Universe(ABC):
     @abstractmethod
