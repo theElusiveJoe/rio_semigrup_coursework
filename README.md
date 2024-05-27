@@ -6,6 +6,7 @@ export PYTHONPATH="$(pwd)/src"
 make create_venv
 make test_all
 make demo_isom_builder_graph
+# check outputs directory
 ```
 
 ## SetUp
@@ -46,6 +47,7 @@ pytest --verbose .
 ### Military algo
 
 Original paper: https://www.irif.fr/~jep/PDF/Rio.pdf
+
 Original code: https://www.irif.fr/~jep/Logiciels/Semigroupe2.0/semigroupe2.html
 
 Check Initialisation.c and Calcul.c files.
