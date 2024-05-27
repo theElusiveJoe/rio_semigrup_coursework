@@ -1,5 +1,6 @@
-import itertools
 import random
+
+
 
 from algebra.graph import Graph
 from algebra.monoid import MonoidController

@@ -19,7 +19,7 @@ def gen_random_sample(set_size: int, generators_num: int) -> MonoidController:
                 _random_transform(set_size)
                 for _ in range(generators_num)
             ]
-            S = prepare_generating_set(generators, minimize=True)
+            S = prepare_generating_set(generators=generators, minimize=True)
         except EmptyGeneratorsSetException:
             continue
         else:

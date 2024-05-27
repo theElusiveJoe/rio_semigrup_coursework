@@ -1,1 +1,1 @@
-from .wrapper import build_isomorphism, build_isomorphism_from_mc
+from .wrapper import *

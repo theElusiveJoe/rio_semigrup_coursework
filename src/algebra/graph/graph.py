@@ -30,14 +30,14 @@ class Graph:
         self.str2node[n.str] = n
         self.val2node[n.val] = n
 
-    def draw_dot(self):
+    def draw_dot(self, filename='base'):
         dot = graphviz.Digraph()
         for v in self.nodes:
             dot.node(v.label(), v.label())
         for v1 in self.nodes:
             for x, v2 in v1.cay_r.items():
                 dot.edge(v1.label(), v2.label(), self.val2node[x].label())
-        dot.render('../output/right_graph', format='png', cleanup=True)
+        dot.render(f'../output/{filename}_right_graph', format='png', cleanup=True)
 
         dot = graphviz.Digraph()
         for v in self.nodes:
@@ -45,7 +45,7 @@ class Graph:
         for v1 in self.nodes:
             for x, v2 in v1.cay_l.items():
                 dot.edge(v1.label(), v2.label(), self.val2node[x].label())
-        dot.render('../output/left_graph', format='png', cleanup=True)
+        dot.render(f'../output/{filename}_left_graph', format='png', cleanup=True)
 
         dot = graphviz.Digraph()
         for v in self.nodes:
@@ -55,7 +55,7 @@ class Graph:
                 dot.edge(v1.label(), v2.label(), self.val2node[x].label())
             for x, v2 in v1.cay_r.items():
                 dot.edge(v1.label(), v2.label(), self.val2node[x].label())
-        dot.render('../output/lr_graph', format='png', cleanup=True)
+        dot.render(f'../output/{filename}_lr_graph', format='png', cleanup=True)
 
     def mult_nodes(self, a: Node, b: Node,
                    use_cay: bool = False, use_monoid: bool = False):
@@ -75,6 +75,9 @@ class Graph:
                 # directly multiply
                 return self.val2node[a.val * b.val]
             case _, True:
+                # TODO: implement
+                raise NotImplementedError()
+            
                 # decompose b.str into seq of generating symbols and traverse graph
                 cur = a
                 monoid_string = b.str.to_symbols_seq()

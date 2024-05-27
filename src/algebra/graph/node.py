@@ -16,7 +16,7 @@ class Node:
     cay_l: dict[Universe, Node]
     cay_r: dict[Universe, Node]
 
-    hclass: Hclass
+    _hclass: Hclass
 
     is_idempotent: bool
 
@@ -31,6 +31,7 @@ class Node:
         self.is_idempotent = False
 
         self.flag1 = False
+        self._hclass = None  # type: ignore
 
     def __hash__(self):
         return hash(self.str)
@@ -50,7 +51,10 @@ class Node:
     def label(self):
         return str(self.str)
 
+    def get_hclass(self) -> Hclass:
+        return self._hclass
+
     def assign_hclass(self, hclass: Hclass):
         # to ensure, we don`t assign hclass twice
-        assert self.hclass is None
-        self.hclass = hclass
+        assert self._hclass is None
+        self._hclass = hclass

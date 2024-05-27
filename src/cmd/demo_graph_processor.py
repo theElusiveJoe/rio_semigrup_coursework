@@ -11,8 +11,8 @@ def main():
     markup_idempotents(graph)
     hclasses = search_Hclasses(graph)
     graph.draw_dot()
-    print('check hclasses on graph diagram:')
-    print(hclasses)
+    # print('check hclasses on graph diagram:')
+    # print(hclasses)
 
 
 main()

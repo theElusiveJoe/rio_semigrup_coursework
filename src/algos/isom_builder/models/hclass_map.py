@@ -1,22 +1,27 @@
+from copy import deepcopy
+from pprint import pformat, pprint
+from typing import Annotated
+
 from algebra.universe import Universe
 from algebra.monoid import MonoidController
 from algebra.graph import Hclass, Graph
 
 from algos.control_flow import HclassesMissmatch
+from algos.graph_processor.hclasses_searcher import search_Hclasses
 
 
 def group_hclasses(hclasses: set[Hclass]):
     he, hi, hni = None, dict[int, set[Hclass]](), dict[int, set[Hclass]]()
 
     for h in hclasses:
-        if h.has_e:
+        if h.has_e():
             if he is not None:
                 raise HclassesMissmatch('too many He')
             else:
                 he = h
             continue
 
-        if h.has_idempotent:
+        if h.has_idempotent():
             st = hi.get(h.size)
             if st is None:
                 st = set()
@@ -29,7 +34,6 @@ def group_hclasses(hclasses: set[Hclass]):
             st = set()
             hni[h.size] = st
         st.add(h)
-        continue
 
     if he is None:
         raise HclassesMissmatch('didn`t find He')
@@ -38,17 +42,24 @@ def group_hclasses(hclasses: set[Hclass]):
 
 
 class HclassMap:
-    hclasses_map: dict[Hclass, Hclass]
+    _hclasses_map: dict[Hclass, Hclass]
 
-    hi_unmatched: dict[int, tuple[set[Hclass], set[Hclass]]]
-    hni_unmatched: dict[int, tuple[set[Hclass], set[Hclass]]]
+    hi_unmatched: dict[int, Annotated[list[set[Hclass]], 2]]
+    hni_unmatched: dict[int, Annotated[list[set[Hclass]], 2]]
 
-    def __init__(self, initObjects: tuple[set[Hclass], set[Hclass]] | None = None) -> None:
+    total_num: int
+
+    def __init__(self, initObjects: tuple[Graph, Graph] | None = None) -> None:
+        '''
+        при создании САМА ставит в соответствие h1_e -> h2_e
+        '''
         if initObjects is None:
             return
-        h1, h2 = initObjects
+        G1, G2 = initObjects
+        h1, h2 = (set(search_Hclasses(G1)), set(search_Hclasses(G2)))
+        self.total_num = len(h1)
 
-        self.hclasses_map = dict()
+        self._hclasses_map = dict()
         self.hi_unmatched = dict()
         self.hni_unmatched = dict()
         h1e, h1i, h1ni = group_hclasses(h1)
@@ -57,7 +68,7 @@ class HclassMap:
         # map He classes
         if h1e.size != h2e.size:
             raise HclassesMissmatch('size of H1e != H2e')
-        self.map_set(h1e, h2e)
+        self._hclasses_map[h1e] = h2e
 
         if h1i.keys() != h2i.keys():
             raise HclassesMissmatch('sizes of H1i missmatches H2i')
@@ -70,28 +81,96 @@ class HclassMap:
             if len(s1) != len(s2):
                 raise HclassesMissmatch(
                     f'neq number of hi-classes of size {hsize}: {len(s1)} vs {len(s2)}')
-            self.hi_unmatched[hsize] = (s1, s2)
+            self.hi_unmatched[hsize] = [s1, s2]
 
         for hsize, s1 in h1ni.items():
             s2 = h2ni[hsize]
             if len(s1) != len(s2):
                 raise HclassesMissmatch(
                     f'neq number of hni-classes of size {hsize}: {len(s1)} vs {len(s2)}')
-            self.hni_unmatched[hsize] = (s1, s2)
+            self.hni_unmatched[hsize] = [s1, s2]
+
+        
+
+    def __str__(self):
+        strs = []
+        strs.append("HCLASSES_MAP{")
+        # strs.append(f"    hi_unmatched: {pformat(self.hi_unmatched)}")
+        # strs.append(f"    hni_unmatched: {pformat(self.hni_unmatched)}")
+        strs.append("    all_map:")
+        for x, y in self._hclasses_map.items():
+            strs.append(f'        {x} -> {y}')
+        strs.append('}')
+        return '\n'.join(strs)
+
+    def assert_current_size(self):
+        keys_size = 0
+        keys_size += len(self._hclasses_map.keys())
+        for v in self.hi_unmatched.values():
+            keys_size += len(v[0])
+        for v in self.hni_unmatched.values():
+            keys_size += len(v[0])
+        assert keys_size == self.total_num, f'expected: {self.total_num}, got: {keys_size}'
+
+        values_size = 0
+        values_size += len(self._hclasses_map.values())
+        for v in self.hi_unmatched.values():
+            values_size += len(v[1])
+        for v in self.hni_unmatched.values():
+            values_size += len(v[1])
+        assert values_size == self.total_num
+
+        for size in self.hi_unmatched:
+            s1 = set(map(lambda x: x.size, self.hi_unmatched[size][0]))
+            s2 = set(map(lambda x: x.size, self.hi_unmatched[size][0]))
+            assert (len(s1) == 1 or len(s1) == 0)and s1 == s2, f'hi: size {size}: {s1}, {s2}'
+
+        for size in self.hni_unmatched:
+            s1 = set(map(lambda x: x.size, self.hni_unmatched[size][0]))
+            s2 = set(map(lambda x: x.size, self.hni_unmatched[size][0]))
+            assert len(s1) <= 1 and s1 == s2
+
+
 
     def map_set(self, a: Hclass, b: Hclass):
-        # TODO: add check if a or b are already mapped
-        self.hclasses_map[a] = b
+        # # print(self)
+        # print(f'set')
+        # print(f'    {a}')
+        # print(f'    {b}')
+        assert a.size == b.size
+        # print(a.size, b.size)
+        assert a.has_e() == b.has_e()
+        # print(a.has_e(), b.has_e())
+        assert a.has_idempotent() == b.has_idempotent()
+        # print(a.has_idempotent(), b.has_idempotent())
+        # TODO: remove after debug
+        # self.assert_current_size()
+        # assert self.hi_unmatched[a.size][0].intersection(set(self._hclasses_map.keys())) == set()
+        # assert self.hni_unmatched[a.size][0].intersection(set(self._hclasses_map.keys())) == set()
+        assert a not in self._hclasses_map.keys()
+        # assert a in self.hi_unmatched[a.size][0] or a in self.hni_unmatched[a.size][0] or a in self._hclasses_map.keys()
+        # assert a in self.hi_unmatched[a.size][0] or a in self.hni_unmatched[a.size][0]
+        assert b not in self._hclasses_map.values()
+
+        remove_here = self.hi_unmatched[a.size] if a.has_idempotent() else self.hni_unmatched[a.size]   
+        remove_here[0].remove(a)
+        remove_here[1].remove(b)
+
+        self._hclasses_map[a] = b
 
     def map_get(self, a):
-        return self.hclasses_map.get(a)
-
-    def __getitem__(self, key: Hclass):
-        return self.hclasses_map[key]
+        return self._hclasses_map.get(a)
 
     def make_copy(self):
         newMap = HclassMap()
-        newMap.hclasses_map = self.hclasses_map.copy()
-        newMap.hi_unmatched = self.hi_unmatched.copy()
-        newMap.hni_unmatched = self.hni_unmatched.copy()
+        newMap._hclasses_map = self._hclasses_map.copy()
+
+        newMap.hi_unmatched = dict()
+        newMap.hni_unmatched = dict()
+        for k in self.hi_unmatched.keys():
+            newMap.hi_unmatched[k] = [self.hi_unmatched[k][0].copy(), self.hi_unmatched[k][1].copy()]
+        for k in self.hni_unmatched.keys():
+            newMap.hni_unmatched[k] = [self.hni_unmatched[k][0].copy(), self.hni_unmatched[k][1].copy()]
+
+        newMap.total_num = self.total_num
         return newMap

@@ -1,5 +1,5 @@
-import itertools
 import random
+random.seed(42)
 
 from algebra.graph import Graph
 from algebra.monoid import MonoidController
@@ -43,3 +43,38 @@ def test_random_samples():
         )
         graph = military_algo(S)
         assert check_hclasses(graph)
+
+def test_hclasses_stability():
+    '''
+    как бы граф не был оформлен, множесто H-классов должно совпадать
+    '''
+    for _ in range(100):
+        S = samples.gen_random_sample(
+            set_size=random.randint(2, 5),
+            generators_num=random.randint(1, 5)
+        )
+        # print(S.generators)
+
+        S1, S2 = S.mixed(), S.mixed()
+        G1, G2 = military_algo(S1), military_algo(S2)
+        H1, H2 = search_Hclasses(G1), search_Hclasses(G2)
+        
+        assert len(H1) == len(H2)
+
+        unmatched_classes = H2
+        for h1 in H1:
+            h2_res = None
+            for h2 in unmatched_classes:
+                if h1.size != h2.size:
+                    continue
+                h1_values = set(map(lambda x:x.val, h1.elems))
+                h2_values = set(map(lambda x:x.val, h2.elems))
+                if h1_values != h2_values:
+                    continue
+                h2_res = h2
+                break
+
+            assert h2_res is not None
+            # print(h1)
+            # print(h2_res)
+            unmatched_classes.remove(h2_res)
