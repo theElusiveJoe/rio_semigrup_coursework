@@ -30,5 +30,3 @@ demo_isom_builder:
 demo_military:
 	make _setup
 	python3 src/cmd/demo_military.py
-
-	

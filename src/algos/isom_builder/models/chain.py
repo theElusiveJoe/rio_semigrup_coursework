@@ -1,13 +1,7 @@
 from __future__ import annotations
 from enum import Enum
 
-from algebra.graph import Graph, Node
-
-
-class ChainMultipleType(Enum):
-    generator = 1
-    monoid_multiply = 2
-    graph_traverse = 3
+from algebra.graph import Graph, Node, MultipleType
 
 
 class Chain:
@@ -22,10 +16,10 @@ class Chain:
     elems: list[Node]
     is_completed: bool
     repeat_degree: int
-    multiple_type: ChainMultipleType
+    multiple_type: MultipleType
     graph: Graph
 
-    def __init__(self, base: Node, multiple_type: ChainMultipleType,
+    def __init__(self, base: Node, multiple_type: MultipleType,
                  graph: Graph) -> None:
         self.is_completed = False
         self.repeat_degree = -1
@@ -46,17 +40,8 @@ class Chain:
         return self.elems[-1]
 
     def build_next(self) -> Node:
-        new_degree: Node
-        match self.multiple_type:
-            case ChainMultipleType.generator:
-                new_degree = self.graph.mult_nodes(
-                    self.last(), self.base(), use_cay=True)
-            case ChainMultipleType.monoid_multiply:
-                new_degree = self.graph.mult_nodes(
-                    self.last(), self.base(), use_cay=False, use_monoid=True)
-            case ChainMultipleType.graph_traverse:
-                new_degree = self.graph.mult_nodes(
-                    self.last(), self.base(), use_cay=False, use_monoid=False)
+        new_degree = self.graph.mult_nodes(
+            self.last(), self.base(), self.multiple_type)
 
         try:
             idx = self.elems.index(new_degree)

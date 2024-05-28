@@ -3,7 +3,7 @@ from algebra.universe.abstract import Universe
 
 from functools import reduce
 from algebra.monoid import MonoidController
-from algebra.graph import Graph, Node, Hclass
+from algebra.graph import Graph, Node, Hclass, MultipleType
 
 from algos.graph_builder import military_algo
 from algos.graph_processor import markup_idempotents
@@ -11,7 +11,7 @@ from algos.graph_processor import markup_idempotents
 from algos.control_flow.custom_exceptions import HclassesMissmatch
 from algos.isom_builder.models import IsomState, IsomExtention
 from algos.isom_builder.models import MonoidMap, HclassMap
-from algos.isom_builder.models import Chain, ChainWinder, ChainMultipleType
+from algos.isom_builder.models import Chain, ChainWinder
 
 
 
@@ -177,12 +177,12 @@ class IsomBuilderAlgo:
 
         a_chain, b_chain = self.get_chain(a, True), self.get_chain(b, False)
         if a_chain is None:
-            a_chain = Chain(a, ChainMultipleType.generator, self.G1)
+            a_chain = Chain(a, MultipleType.generator, self.G1)
             # добавляем цепь в кэш
             self.gs1_chains[a] = a_chain
         if b_chain is None:
-            # CMP: try with ChainMultipleType.monoid_multiply
-            b_chain = Chain(b, ChainMultipleType.graph_traverse, self.G2)
+            # CMP: try with MultipleType.monoid_multiply
+            b_chain = Chain(b, MultipleType.graph_traverse, self.G2)
             self.chains[b] = b_chain
 
         # если обе цепи уже построены, то для их совместности необходимо

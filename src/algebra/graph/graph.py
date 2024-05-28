@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import IntEnum
 
 from algebra.universe import Universe
@@ -10,6 +11,10 @@ class Lr(IntEnum):
     left = 0
     right = 1
 
+class MultipleType(IntEnum):
+    generator = 1
+    monoid_multiply = 2
+    graph_traverse = 3
 
 class Graph:
     nodes: set[Node]
@@ -30,7 +35,7 @@ class Graph:
         self.val2node[n.val] = n
 
     def mult_nodes(self, a: Node, b: Node,
-                   use_cay: bool = False, use_monoid: bool = False):
+                   multiple_type: MultipleType):
         '''
         returns Node(val = a.val * b.val)
 
@@ -39,14 +44,14 @@ class Graph:
         use_monoid -- if u want to use monoid representation of b instead of directly multiply values
         '''
 
-        match use_cay, use_monoid:
-            case True, _:
+        match multiple_type:
+            case MultipleType.generator:
                 # use cay graph
                 return a.cay_r[b.val]
-            case _, False:
+            case MultipleType.monoid_multiply:
                 # directly multiply
                 return self.val2node[a.val * b.val]
-            case _, True:
+            case MultipleType.graph_traverse:
                 symbols = self.S.symbols_to_values(b.str.to_symbols_seq())
                 cur = a
                 for sym in symbols:
