@@ -7,14 +7,11 @@ from algebra.monoid import MonoidElem, MonoidController
 from algebra.graph.node import Node
 
 
-class Lr(IntEnum):
-    left = 0
-    right = 1
-
 class MultipleType(IntEnum):
     generator = 1
     monoid_multiply = 2
     graph_traverse = 3
+
 
 class Graph:
     nodes: set[Node]

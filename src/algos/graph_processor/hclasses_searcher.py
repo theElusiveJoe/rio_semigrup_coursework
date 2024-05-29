@@ -1,5 +1,11 @@
+from enum import IntEnum
 import itertools
-from algebra.graph import Graph, Node, Hclass, Lr
+from algebra.graph import Graph, Node, Hclass
+
+
+class Lr(IntEnum):
+    left = 0
+    right = 1
 
 
 def search_Hclasses(graph: Graph):
