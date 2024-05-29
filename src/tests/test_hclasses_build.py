@@ -10,21 +10,31 @@ random.seed(42)
 
 
 def check_hclasses(g: Graph):
-    hclasses = search_Hclasses(g)
     all_values = set(map(lambda x: x.val, g.nodes))
 
-    def get_elem_l_and_r_class(x: Universe):
-        lclass = set(map(lambda val: val * x, all_values))
-        rclass = set(map(lambda val: val * x, all_values))
-        return lclass, rclass
+    def get_h_class_by_def(n: Universe):
+        return set(map(lambda x: x*n, all_values)).intersection(set(map(lambda x: n*x, all_values)))
+
+    hclasses = search_Hclasses(g)
+    hclasses_values = set(map(
+        lambda hclass: frozenset(map(lambda elem: elem.val, hclass.elems)),
+        hclasses))
+
+    assert len(hclasses_values) == len(hclasses)
+
+    for a in hclasses_values:
+        for b in hclasses_values:
+            if a == b:
+                continue
+            assert len(a.intersection(b)) == 0
 
     for hclass in hclasses:
         assert hclass.size > 0
         elems = hclass.elems
         target_elem = list(elems)[0]
-        target_classes = get_elem_l_and_r_class(target_elem.val)
+        target_classes = get_h_class_by_def(target_elem.val)
         for elem in elems:
-            assert target_classes == get_elem_l_and_r_class(elem.val)
+            assert target_classes == get_h_class_by_def(elem.val)
 
     return True
 
