@@ -46,8 +46,6 @@ class HclassMap:
     H1: set[Hclass]
     H2: set[Hclass]
 
-    total_num: int
-
     def __init__(self, initObjects: tuple[Graph, Graph] | None = None) -> None:
         '''
         при создании САМА ставит в соответствие h1_e -> h2_e
@@ -56,8 +54,6 @@ class HclassMap:
             return
         G1, G2 = initObjects
         self.H1, self.H2 = set(search_Hclasses(G1)), set(search_Hclasses(G2))
-
-        self.total_num = len(self.H1)
 
         self._hclasses_map = dict()
         self.hi_unmatched = dict()
@@ -127,5 +123,4 @@ class HclassMap:
                 self.hni_unmatched[k][0].copy(),
                 self.hni_unmatched[k][1].copy()]
 
-        newMap.total_num = self.total_num
         return newMap
