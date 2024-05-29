@@ -64,6 +64,7 @@ def paint_graph(
     if isom is not None:
         _paint_isom(dot, isom)
 
-    path = pathlib.Path(f'{os.environ["PYTHONPATH"]}/../output/{filename}_graph').resolve()
+    path = pathlib.Path(
+        f'{os.environ["PYTHONPATH"]}/../output/{filename}_graph').resolve()
     res = dot.render(path, format='png', cleanup=True)
-    return res 
+    return res

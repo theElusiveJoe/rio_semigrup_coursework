@@ -108,7 +108,6 @@ class IsomExtention:
         newState = self.base_state.make_copy()
         for a, b in self.hf.items():
             newState.hf.map_set(a, b)
-            newState.hf.assert_current_size()
         for a, b in self.f.items():
             newState.f.map_set(a, b)
         return newState

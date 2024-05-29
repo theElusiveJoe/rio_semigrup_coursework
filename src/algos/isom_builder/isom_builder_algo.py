@@ -14,7 +14,6 @@ from algos.isom_builder.models import MonoidMap, HclassMap
 from algos.isom_builder.models import Chain, ChainWinder
 
 
-
 '''
 ПОЛОЖЕНИЕ Х
 Очень важное общее положение работы алгоритма:
@@ -220,8 +219,6 @@ class IsomBuilderAlgo:
         return res
 
     def guess_elem(self, state: IsomState) -> None | IsomState:
-        state.hf.assert_current_size()
-
         if state.f.is_gen_set_done():
             ok = self.check(state)
             if ok:

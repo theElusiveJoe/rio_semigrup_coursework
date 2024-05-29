@@ -99,34 +99,6 @@ class HclassMap:
         strs.append('}')
         return '\n'.join(strs)
 
-    def assert_current_size(self):
-        keys_size = 0
-        keys_size += len(self._hclasses_map.keys())
-        for v in self.hi_unmatched.values():
-            keys_size += len(v[0])
-        for v in self.hni_unmatched.values():
-            keys_size += len(v[0])
-        assert keys_size == self.total_num, f'expected: {self.total_num}, got: {keys_size}'
-
-        values_size = 0
-        values_size += len(self._hclasses_map.values())
-        for v in self.hi_unmatched.values():
-            values_size += len(v[1])
-        for v in self.hni_unmatched.values():
-            values_size += len(v[1])
-        assert values_size == self.total_num
-
-        for size in self.hi_unmatched:
-            s1 = set(map(lambda x: x.size, self.hi_unmatched[size][0]))
-            s2 = set(map(lambda x: x.size, self.hi_unmatched[size][0]))
-            assert (len(s1) == 1 or len(s1) ==
-                    0) and s1 == s2, f'hi: size {size}: {s1}, {s2}'
-
-        for size in self.hni_unmatched:
-            s1 = set(map(lambda x: x.size, self.hni_unmatched[size][0]))
-            s2 = set(map(lambda x: x.size, self.hni_unmatched[size][0]))
-            assert len(s1) <= 1 and s1 == s2
-
     def map_set(self, a: Hclass, b: Hclass):
         remove_here = self.hi_unmatched[a.size] if a.has_idempotent(
         ) else self.hni_unmatched[a.size]
