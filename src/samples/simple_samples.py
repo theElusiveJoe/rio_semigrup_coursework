@@ -71,7 +71,7 @@ T6_PRINCIPAL_IDEAL = build_gs(
 
 T3_SPIN = build_gs(
     Transformation,
-    [2, 3, 1]
+    [2, 3,  1], [3, 1, 2] 
 )
 
 

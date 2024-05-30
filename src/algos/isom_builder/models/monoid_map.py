@@ -44,8 +44,6 @@ class MonoidMap:
         except KeyError:
             is_generator = False
 
-        assert a not in self.all_map.keys()
-
         self.all_map[a] = b
         if is_generator:
             self.gen_set_map[a] = b
