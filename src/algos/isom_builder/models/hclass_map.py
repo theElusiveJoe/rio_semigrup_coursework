@@ -1,9 +1,13 @@
+from copy import deepcopy
 from typing import Annotated
 
 from algebra.graph import Hclass, Graph
 
 from algos.control_flow import HclassesMissmatch
 from algos.graph_processor.hclasses_searcher import search_Hclasses
+
+from algos.isom_builder.models.algo_config import AlgoConfig
+from algos.isom_builder.models.algo_init_set import AlgoInitSet
 
 
 def group_hclasses(hclasses: set[Hclass]):
@@ -39,6 +43,7 @@ def group_hclasses(hclasses: set[Hclass]):
 
 class HclassMap:
     _hclasses_map: dict[Hclass, Hclass]
+    images_set: set[Hclass]
 
     hi_unmatched: dict[int, Annotated[list[set[Hclass]], 2]]
     hni_unmatched: dict[int, Annotated[list[set[Hclass]], 2]]
@@ -46,18 +51,28 @@ class HclassMap:
     H1: set[Hclass]
     H2: set[Hclass]
 
-    def __init__(self, initObjects: tuple[Graph, Graph] | None = None) -> None:
+    config: AlgoConfig
+
+    def __init__(self, init_set: AlgoInitSet | None = None) -> None:
         '''
         при создании САМА ставит в соответствие h1_e -> h2_e
         '''
-        if initObjects is None:
+        if init_set is None:
             return
-        G1, G2 = initObjects
-        self.H1, self.H2 = set(search_Hclasses(G1)), set(search_Hclasses(G2))
+        self.G1, self.G2 = init_set.G1, init_set.G2
+        self.H1, self.H2 = init_set.H1, init_set.H2
+        self.config = init_set.config
 
         self._hclasses_map = dict()
         self.hi_unmatched = dict()
         self.hni_unmatched = dict()
+        # CMP: cache_isom_h_images_set
+        if self.config.cache_isom_h_images_set:
+            self.images_set = set()
+
+        self.prepare()
+
+    def prepare(self):
         h1e, h1i, h1ni = group_hclasses(self.H1)
         h2e, h2i, h2ni = group_hclasses(self.H2)
 
@@ -65,6 +80,9 @@ class HclassMap:
         if h1e.size != h2e.size:
             raise HclassesMissmatch('size of H1e != H2e')
         self._hclasses_map[h1e] = h2e
+        # CMP: cache_isom_h_images_set
+        if self.config.cache_isom_h_images_set:
+            self.images_set = set()
 
         if h1i.keys() != h2i.keys():
             raise HclassesMissmatch('sizes of H1i missmatches H2i')
@@ -100,27 +118,33 @@ class HclassMap:
         ) else self.hni_unmatched[a.size]
         remove_here[0].remove(a)
         remove_here[1].remove(b)
+        # CMP: cache_isom_h_images_set
+        if self.config.cache_isom_h_images_set:
+            self.images_set.add(b)
 
         self._hclasses_map[a] = b
+
+    def is_image(self, h: Hclass):
+        # CMP: cache_isom_h_images_set
+        if self.config.cache_isom_h_images_set:
+            return h in self.images_set
+        return h in self._hclasses_map.values()
 
     def map_get(self, a):
         return self._hclasses_map.get(a)
 
     def make_copy(self):
-        # CMP: можно ли ускорить??
         newMap = HclassMap()
-        newMap._hclasses_map = self._hclasses_map.copy()
 
         newMap.H1, newMap.H2 = self.H1, self.H2
-        newMap.hi_unmatched = dict()
-        newMap.hni_unmatched = dict()
-        for k in self.hi_unmatched.keys():
-            newMap.hi_unmatched[k] = [
-                self.hi_unmatched[k][0].copy(),
-                self.hi_unmatched[k][1].copy()]
-        for k in self.hni_unmatched.keys():
-            newMap.hni_unmatched[k] = [
-                self.hni_unmatched[k][0].copy(),
-                self.hni_unmatched[k][1].copy()]
+        newMap.config = self.config
+
+        newMap._hclasses_map = self._hclasses_map.copy()
+        newMap.hi_unmatched = deepcopy(self.hi_unmatched)
+        newMap.hni_unmatched = deepcopy(self.hni_unmatched)
+
+        # CMP: cache_isom_h_images_set
+        if self.config.cache_isom_h_images_set:
+            newMap.images_set = self.images_set
 
         return newMap

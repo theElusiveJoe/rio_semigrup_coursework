@@ -37,7 +37,7 @@ class IsomExtention:
             return False, False
 
         # пара (x, b) находится в base_state
-        if b in self.base_state.hf._hclasses_map.values():
+        if self.base_state.hf.is_image(b):
             return False, False
 
         # аналогично проверяем для дополнения base_state
@@ -66,7 +66,7 @@ class IsomExtention:
         # пара (a, x) находится в base_state
         # пара (x, b) находится в base_state
         if a_image != b and a_image is not None \
-                or b in self.base_state.f.all_map.values():
+                or self.base_state.f.is_image(b):
             return False, False
 
         # аналогично проверяем для дополнения base_state

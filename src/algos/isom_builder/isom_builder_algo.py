@@ -1,4 +1,3 @@
-
 from algebra.universe.abstract import Universe
 
 from functools import reduce
@@ -6,12 +5,14 @@ from algebra.monoid import MonoidController
 from algebra.graph import Graph, Node, Hclass, MultipleType
 
 from algos.graph_builder import military_algo
-from algos.graph_processor import markup_idempotents
 
 from algos.control_flow.custom_exceptions import HclassesMissmatch
 from algos.isom_builder.models import IsomState, IsomExtention
 from algos.isom_builder.models import MonoidMap, HclassMap
 from algos.isom_builder.models import Chain, ChainWinder
+from algos.isom_builder.models import AlgoConfig, AlgoInitSet
+
+from utils.events import spawn_event, Event, event_on_startup
 
 
 '''
@@ -29,14 +30,13 @@ from algos.isom_builder.models import Chain, ChainWinder
 
 
 '''
-Меткой CMP помечаются места, которые можно сделать по-другому,
-что может пригодиться на стадии тестирования
+Меткой CMP помечаются места, в которых логика работы алгоритма зависит от конфига работы
 '''
 
 
 class IsomBuilderAlgo:
-    chains: dict[Node, Chain]
-    gs1_chains: dict[Node, Chain]
+    proto_chains: dict[Node, Chain]
+    image_chains: dict[Node, Chain]
 
     S1: MonoidController
     S2: MonoidController
@@ -44,35 +44,30 @@ class IsomBuilderAlgo:
     G1: Graph
     G2: Graph
 
-    def __init__(self, S1: MonoidController,
-                 S2: MonoidController, G1: Graph, G2: Graph):
-        if len(S1) > len(S2):
-            self.S1, self.S2, self.G1, self.G2 = S2, S1, G2, G1
-        else:
-            self.S1, self.S2, self.G1, self.G2 = S1, S2, G1, G2
+    config: AlgoConfig
+    init_set: AlgoInitSet
 
-        self.chains = dict()
-        self.gs1_chains = dict()
+    def __init__(self, init_set: AlgoInitSet):
+        self.S1, self.S2, self.G1, self.G2 = init_set.S1, init_set.S2, init_set.G1, init_set.G2
+        self.config = init_set.config if init_set.config is not None else AlgoConfig()
+        self.init_set = init_set
+
+        self.proto_chains = dict()
+        self.image_chains = dict()
 
     def run(self) -> IsomState | None:
         try:
             start_state = IsomState()
 
             '''
-            необходимо явно ставить e1->e2 в MonoidMap
-            это связано с тем, что IsomState не хранит ссылки на граф и моноид
-
-            в HclassMap ставить h1_e -> h2_e не надо
-            при инициализации она проводит сортировку H-классов, и сама находит h1_e и H2_e
+            e1->e2 в MonoidMap
+            и
+            h1_e -> h2_e в HclassMap
+            ставятся сами
             '''
 
-            start_state.f = MonoidMap((self.S1, self.G1))
-            start_state.f.map_set(
-                self.G1.val2node[self.S1.identity()], self.G2.val2node[self.S2.identity()])
-
-            markup_idempotents(self.G1)
-            markup_idempotents(self.G2)
-            start_state.hf = HclassMap((self.G1, self.G2))
+            start_state.f = MonoidMap(self.init_set)
+            start_state.hf = HclassMap(self.init_set)
 
             return self.guess_elem(start_state)
         except HclassesMissmatch:
@@ -80,8 +75,8 @@ class IsomBuilderAlgo:
 
     def get_chain(self, node: Node, from_gs1: bool):
         if from_gs1:
-            return self.gs1_chains.get(node)
-        return self.chains.get(node)
+            return self.proto_chains.get(node)
+        return self.image_chains.get(node)
 
     def get_candidate_to_guess(
             self, state: IsomState) -> tuple[Node, Hclass] | None:
@@ -174,15 +169,28 @@ class IsomBuilderAlgo:
         этим занимается IsomExtention
         '''
 
-        a_chain, b_chain = self.get_chain(a, True), self.get_chain(b, False)
-        if a_chain is None:
-            a_chain = Chain(a, MultipleType.generator, self.G1)
-            # добавляем цепь в кэш
-            self.gs1_chains[a] = a_chain
-        if b_chain is None:
-            # CMP: try with MultipleType.monoid_multiply
-            b_chain = Chain(b, MultipleType.graph_traverse, self.G2)
-            self.chains[b] = b_chain
+        # CMP: cache_proto_chains
+        match self.config.cache_proto_chains:
+            case True:
+                a_chain = self.get_chain(a, True)
+                if a_chain is None:
+                    a_chain = Chain(a, MultipleType.generator, self.G1)
+                    self.proto_chains[a] = a_chain
+            case False:
+                a_chain = Chain(a, MultipleType.generator, self.G1)
+
+        # CMP: cache_image_chains
+        match self.config.cache_proto_chains:
+            case True:
+                b_chain = self.get_chain(b, False)
+                if b_chain is None:
+                    # CMP: second_chain_mult_type
+                    b_chain = Chain(
+                        b, self.config.second_chain_mult_type, self.G2)
+                    self.proto_chains[b] = b_chain
+            case False:
+                # CMP: second_chain_mult_type
+                b_chain = Chain(b, self.config.second_chain_mult_type, self.G2)
 
         # если обе цепи уже построены, то для их совместности необходимо
         # равенство их длинн
@@ -194,7 +202,15 @@ class IsomBuilderAlgo:
         a_winder, b_winder = ChainWinder(a_chain), ChainWinder(b_chain)
 
         res = None
+        n = 0
         while True:
+            n += 1
+
+            # CMP: chain_max_len
+            if n > self.config.chain_max_len:
+                res = state_extention.merge_base_state_and_addition()
+                break
+
             an, bn = a_winder.next(), b_winder.next()
 
             are_consistent = state_extention.check_and_set_monoid_elems_and_hclasses(
@@ -231,8 +247,7 @@ class IsomBuilderAlgo:
 
         a, hb = guess_field
         for b in hb.elems:
-            # CMP: try to make it faster!!!
-            if b in state.f.all_map.values():
+            if state.f.is_image(b):
                 continue
 
             next_state = self.check_guess_by_chain(state, a, b)

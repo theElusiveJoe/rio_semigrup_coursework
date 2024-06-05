@@ -32,3 +32,9 @@ class Hclass:
 
     def __hash__(self):
         return hash(self.elems)
+
+    def __copy__(self):
+        return self
+
+    def __deepcopy__(self, memo):
+        return self

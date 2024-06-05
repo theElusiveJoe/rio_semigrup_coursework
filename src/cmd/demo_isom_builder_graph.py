@@ -2,7 +2,7 @@ import random
 
 from algos.isom_builder import build_isomorphism_extended
 from algebra.utils import prepare_generating_set
-from utils.graph_painter import paint_graph
+from utils.painter.graph_painter import paint_graph
 import samples
 
 random.seed(42)

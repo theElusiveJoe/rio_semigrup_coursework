@@ -13,7 +13,8 @@ def check_hclasses(g: Graph):
     all_values = set(map(lambda x: x.val, g.nodes))
 
     def get_h_class_by_def(n: Universe):
-        return set(map(lambda x: x*n, all_values)).intersection(set(map(lambda x: n*x, all_values)))
+        return set(map(lambda x: x * n, all_values)
+                   ).intersection(set(map(lambda x: n * x, all_values)))
 
     hclasses = search_Hclasses(g)
     hclasses_values = set(map(

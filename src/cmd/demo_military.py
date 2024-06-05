@@ -1,7 +1,7 @@
 from samples import simple_samples
 
 from algos.graph_builder import military_algo
-from utils.graph_painter import paint_graph
+from utils.painter.graph_painter import paint_graph
 
 
 def main():

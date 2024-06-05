@@ -1,25 +1,31 @@
 from algebra.monoid import MonoidController
 from algebra.graph import Graph
+from algos.graph_processor.hclasses_searcher import search_Hclasses
+from algos.graph_processor.idempotents_markupper import markup_idempotents
+from algos.isom_builder.models.algo_config import AlgoConfig
+from algos.isom_builder.models.algo_init_set import AlgoInitSet
 from .isom_builder_algo import IsomBuilderAlgo
 from .models import IsomState
 
 from algos.graph_builder import military_algo
 
 
-def build_isomorphism(S1: MonoidController, S2: MonoidController,
-                      G1: Graph, G2: Graph) -> IsomState | None:
-    return IsomBuilderAlgo(S1, S2, G1, G2).run()
-
-
-def build_isomorphism_from_mc(S1: MonoidController, S2: MonoidController):
+def build_isomorphism_extended(
+        S1: MonoidController, S2: MonoidController, config: AlgoConfig | None = None):
     G1 = military_algo(S1)
     G2 = military_algo(S2)
-    return build_isomorphism(S1, S2, G1, G2)
-
-
-def build_isomorphism_extended(S1: MonoidController, S2: MonoidController):
-    G1 = military_algo(S1)
-    G2 = military_algo(S2)
-    algo = IsomBuilderAlgo(S1, S2, G1, G2)
+    markup_idempotents(G1)
+    markup_idempotents(G2)
+    H1 = set(search_Hclasses(G1))
+    H2 = set(search_Hclasses(G2))
+    init_set = AlgoInitSet(S1, S2, G1, G2, H1, H2,
+                           config=config if config else AlgoConfig())
+    algo = IsomBuilderAlgo(init_set)
     result = algo.run()
     return algo, result
+
+
+def build_isomorphism_from_mc(
+        S1: MonoidController, S2: MonoidController, config: AlgoConfig | None = None):
+    _, res = build_isomorphism_extended(S1, S2, config)
+    return res

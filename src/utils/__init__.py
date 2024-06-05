@@ -1,1 +1,1 @@
-from .graph_painter import paint_graph
+from .painter.graph_painter import paint_graph
