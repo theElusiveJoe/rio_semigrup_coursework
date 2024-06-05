@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import itertools
-from tkinter import image_names
 
 from algebra.graph.graph import MultipleType
 

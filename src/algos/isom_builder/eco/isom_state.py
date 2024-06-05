@@ -1,5 +1,5 @@
-from algos.isom_builder.models import HclassMap
-from algos.isom_builder.models import MonoidMap
+from .hclass_map import HclassMap
+from .monoid_map import MonoidMap
 
 
 class IsomState:

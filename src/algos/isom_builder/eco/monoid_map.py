@@ -1,7 +1,7 @@
 from algebra.monoid import MonoidController
 from algebra.graph import Node, Graph
-from algos.isom_builder.models.algo_config import AlgoConfig
-from algos.isom_builder.models.algo_init_set import AlgoInitSet
+from algos.isom_builder.shared.algo_config import AlgoConfig
+from algos.isom_builder.shared.algo_init_set import AlgoInitSet
 
 
 class MonoidMap:

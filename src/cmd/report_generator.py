@@ -1,8 +1,8 @@
 import time
 from typing import Any
 from algebra.monoid.controller import MonoidController
-from algos.isom_builder.models.algo_config import AlgoConfig
-from algos.isom_builder.wrapper import build_isomorphism_from_mc
+from algos.isom_builder.shared.algo_config import AlgoConfig
+from algos.isom_builder.wrapper import eco_isom
 from samples import funny_samples, simple_samples
 from utils.tester.timer import timer
 
@@ -11,7 +11,7 @@ def time_measurement(tests: dict[Any, MonoidController], config: AlgoConfig):
     results = dict()
     for name, S in tests.items():
         S1, S2 = S, S
-        t, _ = timer(lambda: build_isomorphism_from_mc(S1, S2, config))
+        t, _ = timer(lambda: eco_isom(S1, S2, config))
 
         results[name] = t
 

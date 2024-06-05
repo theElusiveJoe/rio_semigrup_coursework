@@ -1,7 +1,7 @@
 import random
 
 from algebra.utils import prepare_generating_set
-from algos.isom_builder import build_isomorphism_from_mc
+from algos.isom_builder import eco, eco_isom
 from samples import simple_samples
 import samples
 
@@ -16,7 +16,7 @@ def main():
     print('without prepare generating set:')
     S1 = simple_samples.T3_SPIN_PLUS
     S2 = simple_samples.T3_SPIN_PLUS
-    res = build_isomorphism_from_mc(S1, S2.mixed())
+    res = eco_isom(S1, S2.mixed())
     print(res.f)  # type: ignore
     print()
 
@@ -24,7 +24,7 @@ def main():
     print('unnecessary elems removed')
     S1 = prepare_generating_set(simple_samples.T3_SPIN_PLUS.generators)
     S2 = simple_samples.T3_SPIN_PLUS
-    res = build_isomorphism_from_mc(S1, S2.mixed())
+    res = eco_isom(S1, S2.mixed())
     print(res.f)  # type: ignore
     print()
 
@@ -34,7 +34,7 @@ def main():
     print(S.generators)
     print('ожидайте, это на долго')
     S1, S2 = S.mixed(), S.mixed()
-    res = build_isomorphism_from_mc(S1, S2)
+    res = eco_isom(S1, S2)
     print(res.f)  # type: ignore
 
 

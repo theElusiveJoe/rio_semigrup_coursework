@@ -3,7 +3,7 @@ import os
 import pathlib
 
 from algebra.graph import Graph, Hclass
-from algos.isom_builder.models.monoid_map import MonoidMap
+from algos.isom_builder.eco.monoid_map import MonoidMap
 
 
 def _paint_graph(dot: graphviz.Digraph, graph: Graph):

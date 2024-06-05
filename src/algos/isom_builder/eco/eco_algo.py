@@ -7,11 +7,16 @@ from algebra.graph import Graph, Node, Hclass, MultipleType
 from algos.graph_builder import military_algo
 
 from algos.control_flow.custom_exceptions import HclassesMissmatch
-from algos.isom_builder.models import IsomState, IsomExtention
-from algos.isom_builder.models import MonoidMap, HclassMap
-from algos.isom_builder.models import Chain, ChainWinder
-from algos.isom_builder.models import AlgoConfig, AlgoInitSet
 
+from algos.isom_builder.shared.algo_config import AlgoConfig
+from algos.isom_builder.shared.algo_init_set import AlgoInitSet
+
+from algos.isom_builder.eco.chain import Chain
+from algos.isom_builder.eco.chain_winder import ChainWinder
+from algos.isom_builder.eco.hclass_map import HclassMap
+from algos.isom_builder.eco.isom_state import IsomState
+from algos.isom_builder.eco.isom_state_extention import IsomExtention
+from algos.isom_builder.eco.monoid_map import MonoidMap
 from utils.events import spawn_event, Event, event_on_startup
 
 
@@ -34,7 +39,7 @@ from utils.events import spawn_event, Event, event_on_startup
 '''
 
 
-class IsomBuilderAlgo:
+class IsomBuilderEcoAlgo:
     proto_chains: dict[Node, Chain]
     image_chains: dict[Node, Chain]
 
@@ -208,7 +213,7 @@ class IsomBuilderAlgo:
 
             # CMP: chain_max_len
             if n > self.config.chain_max_len:
-                res = state_extention.merge_base_state_and_addition()
+                res = state_extention.merge_base_state_and_extention()
                 break
 
             an, bn = a_winder.next(), b_winder.next()
@@ -229,7 +234,7 @@ class IsomBuilderAlgo:
             # обе цепи завершились одновременно, причем все их элементы
             # совпадали
             if a_winder.at_the_end() == b_winder.at_the_end() == True:
-                res = state_extention.merge_base_state_and_addition()
+                res = state_extention.merge_base_state_and_extention()
                 break
 
         return res

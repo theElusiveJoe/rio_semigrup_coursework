@@ -1,5 +1,5 @@
 from algebra.graph import Node, Hclass
-from . import IsomState
+from algos.isom_builder.eco.isom_state import IsomState
 
 
 class IsomExtention:
@@ -101,7 +101,7 @@ class IsomExtention:
             self.f[a] = b
         return are_consistent
 
-    def merge_base_state_and_addition(self) -> IsomState:
+    def merge_base_state_and_extention(self) -> IsomState:
         '''
         returns updated copy of base_state
         '''

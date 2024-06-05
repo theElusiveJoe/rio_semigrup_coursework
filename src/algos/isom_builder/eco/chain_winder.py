@@ -1,4 +1,4 @@
-from algos.isom_builder.models.chain import Chain
+from algos.isom_builder.eco.chain import Chain
 
 
 class ChainWinder:

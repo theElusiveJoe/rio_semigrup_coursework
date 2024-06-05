@@ -4,7 +4,8 @@ from dataclasses import dataclass, field
 from algebra.graph.graph import Graph
 from algebra.graph.hclass import Hclass
 from algebra.monoid.controller import MonoidController
-from algos.isom_builder.models.algo_config import AlgoConfig
+
+from algos.isom_builder.shared.algo_config import AlgoConfig
 
 
 @dataclass
