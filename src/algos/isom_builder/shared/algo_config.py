@@ -13,6 +13,7 @@ OPT_CACHE_IMAGE_SET = [True, False]
 OPT_CACHE_H_IMAGE_SET = [True, False]
 # OPT_CHAIN_MAX_LEN = [1, 10, 100, float('infinity')]
 
+
 @dataclass
 class AlgoConfig():
     use_eco_algo: bool = True

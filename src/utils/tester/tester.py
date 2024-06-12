@@ -20,7 +20,8 @@ sumStats = TypeVar('sumStats')
 
 
 @dataclass
-class FuncSet(Generic[inputType, intermediateType, resultType, inStats, postStats, comboStats, sumStats]):
+class FuncSet(Generic[inputType, intermediateType,
+              resultType, inStats, postStats, comboStats, sumStats]):
     preparator: Callable[[inputType], intermediateType]
     f: Callable[[intermediateType], resultType]
     inProcessor: Callable[[Callable[[intermediateType], resultType], intermediateType],
@@ -64,7 +65,8 @@ def run_single_tests_family(
     return fs.sumUpper(results)
 
 
-def run_one_semigroup(S: MonoidController, n: int, configs: list[NamedConfig], fs: FuncSet):
+def run_one_semigroup(S: MonoidController, n: int,
+                      configs: list[NamedConfig], fs: FuncSet):
     results = dict()
     S_variations = list(set([(S.mixed(), S.mixed()) for _ in range(n)]))
 
@@ -76,7 +78,8 @@ def run_one_semigroup(S: MonoidController, n: int, configs: list[NamedConfig], f
     return results
 
 
-def run_tests(tests_list: list[TestCase], configs: list[NamedConfig], fs: FuncSet, variations_num: int):
+def run_tests(tests_list: list[TestCase],
+              configs: list[NamedConfig], fs: FuncSet, variations_num: int):
     results = dict()
     for tc in tests_list:
         print(f"test case: {tc.name}")

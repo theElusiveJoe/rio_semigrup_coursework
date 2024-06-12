@@ -33,14 +33,16 @@ class IsomBuilderNaiveAlgo:
     def run(self) -> SimpleIsom | None:
         return self.guess(SimpleIsom(), set(), 0)
 
-    def guess(self, isom: SimpleIsom, images: set[Node], i: int) -> SimpleIsom | None:
+    def guess(self, isom: SimpleIsom,
+              images: set[Node], i: int) -> SimpleIsom | None:
         if i == len(self.S1.generators):
             return self.check(isom)
 
         a = self.s1_generators[i]
-        for b in filter(lambda x: x not in images and not x.is_identity(), self.G2.nodes):
+        for b in filter(
+                lambda x: x not in images and not x.is_identity(), self.G2.nodes):
             res = self.guess(
-                isom | {a: b}, images | {b}, i+1
+                isom | {a: b}, images | {b}, i + 1
             )
             if res:
                 return res

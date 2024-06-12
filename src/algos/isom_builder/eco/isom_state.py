@@ -18,4 +18,4 @@ class IsomState:
         return newIsomState
 
     def __str__(self):
-        return f'ISOM_STATE:\n{self.f}\n{self.hf}'
+        return f'ISOM_STATE: \n{self.f}\n{self.hf}'

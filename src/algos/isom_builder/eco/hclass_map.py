@@ -9,8 +9,6 @@ from algos.isom_builder.shared.algo_config import AlgoConfig
 from algos.isom_builder.shared.algo_init_set import AlgoInitSet
 
 
-
-
 def group_hclasses(hclasses: set[Hclass]):
     he, hi, hni = None, dict[int, set[Hclass]](), dict[int, set[Hclass]]()
 

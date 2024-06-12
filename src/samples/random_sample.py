@@ -13,7 +13,8 @@ def _random_transform(set_size: int):
                           for _ in range(set_size)])
 
 
-def gen_random_sample(set_size: int, generators_num: int, minimize = True) -> MonoidController:
+def gen_random_sample(set_size: int, generators_num: int,
+                      minimize=True) -> MonoidController:
     if set_size == 1:
         raise RuntimeError('а зачем тебе моноид из одного элемента? :)')
     if set_size < -0:
@@ -24,7 +25,8 @@ def gen_random_sample(set_size: int, generators_num: int, minimize = True) -> Mo
                 _random_transform(set_size)
                 for _ in range(generators_num)
             ]
-            S = prepare_generating_set(generators=generators, minimize=minimize)
+            S = prepare_generating_set(
+                generators=generators, minimize=minimize)
         except EmptyGeneratorsSetException:
             continue
         else:

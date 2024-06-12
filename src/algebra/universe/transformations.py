@@ -4,6 +4,7 @@ from algebra.universe.abstract import Universe
 
 from utils.events import Event, spawn_event
 
+
 class Transformation(Universe):
     elems: tuple[int, ...]
 

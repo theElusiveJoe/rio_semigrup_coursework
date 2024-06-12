@@ -16,43 +16,45 @@ from utils.events.eventsHandler import event_on_startup
 from .algo_init_set import AlgoInitSet
 
 
-def ch_monoid_mult(init_set: AlgoInitSet, isom: IsomState | SimpleIsom) -> bool:
+def ch_monoid_mult(init_set: AlgoInitSet,
+                   isom: IsomState | SimpleIsom) -> bool:
     total_map: dict[Universe, Universe] = dict()
 
     for a in init_set.G1.nodes:
         a_decomp = [init_set.G1.val2node[x]
                     for x in init_set.S1.symbols_to_values(a.str.to_symbols_seq())]
 
-        if type(isom) == IsomState:
+        if isinstance(isom, IsomState):
             a_decomp_image = [isom.f.gen_set_map[x] for x in a_decomp]
-        elif type(isom) == dict:
+        elif isinstance(isom, dict):
             a_decomp_image = [isom[x] for x in a_decomp]
         else:
-            raise RuntimeError(f'unknown isom type: {isom}:{type(isom)}')
+            raise RuntimeError(f'unknown isom type: {isom}: {type(isom)}')
 
         total_map[a.val] = reduce(lambda x, y: x * y.val,
                                   a_decomp_image, init_set.S2.identity())
 
     for a, a_img in total_map.items():
         for b, b_img in total_map.items():
-            if a_img * b_img != total_map[a*b]:
+            if a_img * b_img != total_map[a * b]:
                 return False
     return True
 
 
-def ch_graph_traverse(init_set: AlgoInitSet, isom: IsomState | SimpleIsom) -> bool:
+def ch_graph_traverse(init_set: AlgoInitSet,
+                      isom: IsomState | SimpleIsom) -> bool:
     total_map: dict[Node, Node] = dict()
 
     for a in init_set.G1.nodes:
         a_decomp = [init_set.G1.val2node[x]
                     for x in init_set.S1.symbols_to_values(a.str.to_symbols_seq())]
 
-        if type(isom) == IsomState:
+        if isinstance(isom, IsomState):
             a_decomp_image = [isom.f.gen_set_map[x] for x in a_decomp]
-        elif type(isom) == dict:
+        elif isinstance(isom, dict):
             a_decomp_image = [isom[x] for x in a_decomp]
         else:
-            raise RuntimeError(f'unknown isom type: {isom}:{type(isom)}')
+            raise RuntimeError(f'unknown isom type: {isom}: {type(isom)}')
 
         if a_decomp_image == []:
             a_img = init_set.G2.val2node[init_set.S2.identity()]

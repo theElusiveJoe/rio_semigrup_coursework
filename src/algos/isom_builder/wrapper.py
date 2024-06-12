@@ -1,17 +1,16 @@
-from algebra.monoid import MonoidController
 from algebra.graph import Graph
+from algebra.monoid import MonoidController
+from algos.graph_builder import military_algo
 from algos.graph_processor.hclasses_searcher import search_Hclasses
 from algos.graph_processor.idempotents_markupper import markup_idempotents
-
-from algos.graph_builder import military_algo
+from algos.isom_builder.eco.eco_algo import IsomBuilderEcoAlgo
+from algos.isom_builder.naive.naive_algo import IsomBuilderNaiveAlgo
 from algos.isom_builder.shared.algo_config import AlgoConfig
 from algos.isom_builder.shared.algo_init_set import AlgoInitSet
 
-from algos.isom_builder.eco.eco_algo import IsomBuilderEcoAlgo
-from algos.isom_builder.naive.naive_algo import IsomBuilderNaiveAlgo
 
-
-def create_init_set(S1: MonoidController, S2: MonoidController, config: AlgoConfig | None = None):
+def create_init_set(S1: MonoidController, S2: MonoidController,
+                    config: AlgoConfig | None = None):
     G1 = military_algo(S1)
     G2 = military_algo(S2)
     markup_idempotents(G1)
