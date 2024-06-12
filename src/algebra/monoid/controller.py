@@ -33,6 +33,12 @@ class MonoidController:
 
     def __len__(self):
         return len(self.generators)
+    
+    def __hash__(self):
+        return hash(tuple(self.generators))
+    
+    def __eq__(self, other: MonoidController):
+        return self.generators == other.generators
 
     def __getitem__(self, key: int):
         return self.generators[key]
@@ -53,3 +59,9 @@ class MonoidController:
         new = deepcopy(self)
         shuffle(new.generators)
         return new
+
+    def __str__(self):
+        return str(self.generators)
+    
+    def __repr__(self):
+        return str(self)

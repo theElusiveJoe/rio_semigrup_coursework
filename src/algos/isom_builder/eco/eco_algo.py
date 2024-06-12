@@ -17,6 +17,7 @@ from algos.isom_builder.eco.hclass_map import HclassMap
 from algos.isom_builder.eco.isom_state import IsomState
 from algos.isom_builder.eco.isom_state_extention import IsomExtention
 from algos.isom_builder.eco.monoid_map import MonoidMap
+from algos.isom_builder.shared.check import check_isom
 from utils.events import spawn_event, Event, event_on_startup
 
 
@@ -185,14 +186,14 @@ class IsomBuilderEcoAlgo:
                 a_chain = Chain(a, MultipleType.generator, self.G1)
 
         # CMP: cache_image_chains
-        match self.config.cache_proto_chains:
+        match self.config.cache_image_chains:
             case True:
                 b_chain = self.get_chain(b, False)
                 if b_chain is None:
                     # CMP: second_chain_mult_type
                     b_chain = Chain(
                         b, self.config.second_chain_mult_type, self.G2)
-                    self.proto_chains[b] = b_chain
+                    self.image_chains[b] = b_chain
             case False:
                 # CMP: second_chain_mult_type
                 b_chain = Chain(b, self.config.second_chain_mult_type, self.G2)
@@ -210,11 +211,6 @@ class IsomBuilderEcoAlgo:
         n = 0
         while True:
             n += 1
-
-            # CMP: chain_max_len
-            if n > self.config.chain_max_len:
-                res = state_extention.merge_base_state_and_extention()
-                break
 
             an, bn = a_winder.next(), b_winder.next()
 
@@ -264,45 +260,7 @@ class IsomBuilderEcoAlgo:
 
         return None
 
-    def check(self, state: IsomState) -> bool:
-        total_map: dict[Universe, Universe] = dict()
-
-        '''
-        строим моноид из образов generating_set_1
-        проверяем, что рамеры графов совпадают
-        '''
-        gs2 = list(map(lambda x: x.val, state.f.gen_set_map.values()))
-        image_mc = MonoidController(gs2)
-        image_graph = military_algo(image_mc)
-        if len(self.G1.nodes) != len(image_graph.nodes):
-            return False
-
-        for a in self.G1.nodes:
-            for b in self.G1.nodes:
-                ab_val = a.val * b.val
-                # найдем разложение a на элементы generating_set_1
-                a_decomp = [self.G1.val2node[x]
-                            for x in self.S1.symbols_to_values(a.str.to_symbols_seq())]
-                # найдем разложение b на элементы generating_set_1
-                b_decomp = [self.G1.val2node[x]
-                            for x in self.S1.symbols_to_values(b.str.to_symbols_seq())]
-                # разложение ab
-                ab_decomp = a_decomp + b_decomp
-
-                if ab_decomp == [] and ab_val.is_identity():
-                    continue
-
-                # список образов разложения ab
-                ab_decomp_image = [state.f.all_map[x] for x in ab_decomp]
-                # перемножим
-                ab_val_image = reduce(
-                    lambda x, y: x * y.val, ab_decomp_image[1:], ab_decomp_image[0].val)
-
-                ab_val_exists_image = total_map.get(ab_val)
-                if ab_val_exists_image is None:
-                    total_map[ab_val] = ab_val_image
-                else:
-                    if ab_val_exists_image != ab_val_image:
-                        return False
-
-        return True
+    def check(self, state: IsomState) -> IsomState | None:
+        if check_isom(self.init_set, state):
+            return state
+        return None

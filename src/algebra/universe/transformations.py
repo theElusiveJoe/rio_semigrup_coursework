@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Iterable
 from algebra.universe.abstract import Universe
 
+from utils.events import Event, spawn_event
 
 class Transformation(Universe):
     elems: tuple[int, ...]
@@ -16,6 +17,7 @@ class Transformation(Universe):
         return str(self.elems)
 
     def __mul__(self, other: Transformation):
+        spawn_event(Event.sg_mult)
         new_elems = []
         for x in other.elems:
             new_elems.append(self.elems[x - 1])

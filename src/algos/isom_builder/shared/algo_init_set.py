@@ -5,7 +5,7 @@ from algebra.graph.graph import Graph
 from algebra.graph.hclass import Hclass
 from algebra.monoid.controller import MonoidController
 
-from algos.isom_builder.shared.algo_config import AlgoConfig
+from .algo_config import AlgoConfig
 
 
 @dataclass

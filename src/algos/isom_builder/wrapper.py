@@ -7,8 +7,9 @@ from algos.graph_builder import military_algo
 from algos.isom_builder.shared.algo_config import AlgoConfig
 from algos.isom_builder.shared.algo_init_set import AlgoInitSet
 
-from algos.isom_builder.eco import IsomBuilderEcoAlgo
-from algos.isom_builder.naive import IsomBuilderNaiveAlgo
+from algos.isom_builder.eco.eco_algo import IsomBuilderEcoAlgo
+from algos.isom_builder.naive.naive_algo import IsomBuilderNaiveAlgo
+
 
 def create_init_set(S1: MonoidController, S2: MonoidController, config: AlgoConfig | None = None):
     G1 = military_algo(S1)
@@ -17,7 +18,7 @@ def create_init_set(S1: MonoidController, S2: MonoidController, config: AlgoConf
     markup_idempotents(G2)
     H1 = set(search_Hclasses(G1))
     H2 = set(search_Hclasses(G2))
-    init_set = AlgoInitSet(S1, S2, G1, G2, H1, H2,
+    init_set = AlgoInitSet(S1=S1, S2=S2, G1=G1, G2=G2, H1=H1, H2=H2,
                            config=config if config else AlgoConfig())
     return init_set
 

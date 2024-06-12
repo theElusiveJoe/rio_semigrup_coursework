@@ -1,4 +1,4 @@
 from algebra.graph import Node
-from typing import TypeAlias
+from typing import NewType, TypeAlias
 
-SimpleIsom = dict[Node, Node]
+SimpleIsom: TypeAlias = dict[Node, Node]

@@ -1,10 +1,5 @@
 from __future__ import annotations
 from .event import Event
-import logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(message)s",
-)
 
 
 def spawn_event(e: Event):
@@ -21,24 +16,25 @@ def event_on_startup(e: Event):
 
 
 class EventHandler:
-    events: list[Event]
+    events: dict[str, float]
 
     def __init__(self) -> None:
-        self.events = []
+        self.events = {
+            str(Event.check_call): 0,
+            str(Event.sg_mult): 0,
+        }
 
-    @staticmethod
-    def reset():
-        global EH
-        EH = EventHandler()
+    def reset(self):
+        self.events = {
+            str(Event.check_call): 0,
+            str(Event.sg_mult): 0,
+        }
 
     def handle_event(self, e: Event):
-        logging.info(f'event {e}')
-        self.events.append(e)
+        self.events[str(e)] += 1
 
-    def create_report(self):
-        print('report:')
-        for e in self.events:
-            print(e)
+    def process_events(self) -> dict[str, float]:
+        return self.events
 
 
 EH: EventHandler = EventHandler()
