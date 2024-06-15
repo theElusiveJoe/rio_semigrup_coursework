@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-base = 1000
+base = 10
 
 
 def encode(seq: list[int]) -> int:

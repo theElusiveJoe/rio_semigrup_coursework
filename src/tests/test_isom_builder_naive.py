@@ -21,7 +21,7 @@ def test_simple_samples():
 def test_random_samples():
     for _ in range(1):
         S = samples.gen_random_sample(
-            set_size=random.randint(2, 4),
-            generators_num=random.randint(1, 5)
+            set_size=random.randint(2, 5),
+            generators_num=random.randint(2, 10)
         )
         check_isomorphism_build(S)
