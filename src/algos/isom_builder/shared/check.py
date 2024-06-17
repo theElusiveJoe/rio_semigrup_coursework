@@ -34,6 +34,10 @@ def ch_monoid_mult(init_set: AlgoInitSet,
         total_map[a.val] = reduce(lambda x, y: x * y.val,
                                   a_decomp_image, init_set.S2.identity())
 
+
+    if len(set(total_map.values())) != len(init_set.G1.nodes):
+        return False
+
     for a, a_img in total_map.items():
         for b, b_img in total_map.items():
             if a_img * b_img != total_map[a * b]:
@@ -69,6 +73,9 @@ def ch_graph_traverse(init_set: AlgoInitSet,
                 lambda x, y: x.cay_r[y], traverse_path, a_decomp_image[0])
 
         total_map[a] = a_img
+
+    if len(set(total_map.values())) != len(init_set.G1.nodes):
+        return False
 
     for a, a_img in total_map.items():
         for b, b_img in total_map.items():
